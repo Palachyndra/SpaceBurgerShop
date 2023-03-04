@@ -1,0 +1,32 @@
+.burger-ingredients-menu {
+    display: flex;
+}
+.burger-custom-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    text-align: center;
+}
+.burger-custom-container-ingredients {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 250px;
+}
+.burger-custom-container-ingredients-text {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.size {
+    max-height: 824px;
+    max-width: 600px;
+    overflow-x: auto;
+}
+
+.up-counter {
+    position: relative;
+    bottom: 10px !important;
+    left: 150px !important;
+}
+

@@ -1,0 +1,13 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 88px;
+    background-color: #1C1C21;
+}
+.container {
+    display: inherit;
+}
+.mini-container {
+    display: inherit;
+}
