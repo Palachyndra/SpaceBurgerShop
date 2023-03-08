@@ -71,5 +71,6 @@ const BurgerDataMenu = props => {
  };
 
  MenuCreator.propTypes = { props: ingredientType, };
+ BurgerDataMenu.propTypes = { props: ingredientType, };
 
 export default BurgerIngredients;
