@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import style from './burger-ingredients.module.css';
-import datafile from '../../utils/data.js'
 import ingredientType from '../../utils/types.js'
+import Modal from '../modal/modal'
 import {Tab, CurrencyIcon, Counter} from '@ya.praktikum/react-developer-burger-ui-components';
 
-
-const BurgerDataMenu = props => {
-    const [current, setCurrent] = React.useState('bun');
+const BurgerDataMenu = ({props}) => {
+   const [current, setCurrent] = React.useState('bun');
 
    return (
       <div className={style.custom_scroll}>
@@ -42,15 +42,19 @@ const BurgerDataMenu = props => {
 
  const MenuCreator = ({props}) => {
    const [count, setCount] = useState(0);
+   const [isOpen, setIsOpen] = React.useState(false);
 
    const incrementCount = () => {
-      setCount(count + 1);
+      if(isOpen === false)
+       setCount(count + 1);
+      setIsOpen(!isOpen);
    };
     
    return (
          <div className={style.burger_custom_container_ingredients + " pl-4 pr-6 pb-8"} onClick={incrementCount}>
             <div className={style.up_counter}>
             { count !== 0 ? <Counter count={count} size="default" /> : '' } 
+            { isOpen && <Modal setIsOpen={setIsOpen} props={props} orderOrNot={false} />}
             </div>
             <img className="pl-4" src={props.image} alt={props.name} />
             <div className={style.burger_custom_container_ingredients_text}>
@@ -63,14 +67,13 @@ const BurgerDataMenu = props => {
  }
 
 
- const BurgerIngredients = () => {
-   const data = datafile;
+ const BurgerIngredients = ({props}) => {
    return (
-     <BurgerDataMenu {...data} />
+     <BurgerDataMenu props={props} />
    );
  };
 
  MenuCreator.propTypes = { props: ingredientType, };
- BurgerDataMenu.propTypes = { props: ingredientType, };
-
+ BurgerDataMenu.propTypes = PropTypes.shape({ props: ingredientType }).isRequired;
+ 
 export default BurgerIngredients;
