@@ -43,7 +43,7 @@ const BurgerConstructor = ({ dataOrders }) => {
                 <Button htmlType="button" type="primary" size="large" onClick={() => setIsOpen(!isOpen)}>
                     Оформить заказ
                 </Button>
-                {isOpen && <Modal setIsOpen={setIsOpen} modalDetails={<OrderDetails />} />}
+                {isOpen && <Modal setIsOpen={setIsOpen} modalDetails={<OrderDetails />} orderOrNot={true} />}
             </div>
         </div>
     )
