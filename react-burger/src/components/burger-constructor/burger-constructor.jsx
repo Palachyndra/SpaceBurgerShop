@@ -17,6 +17,13 @@ const BurgerConstructor = ({ dataOrders }) => {
     const data = datafile;
     let sumPrice = sumOrder(data);
 
+    const handleClose = () => {
+        return setIsOpen(false);
+    }
+    const handleOpen = () => {
+        return setIsOpen(true);
+    }
+
     return (
         <div className="ml-10 pb-10">
             <div className={style.constructor_bun} >
@@ -40,10 +47,12 @@ const BurgerConstructor = ({ dataOrders }) => {
             </div>
             <div className={style.container + " pt-10"}>
                 <div className="pr-10 text text_type_digits-medium"> {sumPrice} <CurrencyIcon className={style.size_icon} type="primary" /> </div>
-                <Button htmlType="button" type="primary" size="large" onClick={() => setIsOpen(!isOpen)}>
+                <Button htmlType="button" type="primary" size="large" onClick={handleOpen}>
                     Оформить заказ
                 </Button>
-                {isOpen && <Modal setIsOpen={setIsOpen} modalDetails={<OrderDetails />} orderOrNot={true} />}
+                {isOpen && <Modal title={''} onClose={handleClose} >
+                    <OrderDetails />
+                </Modal>}
             </div>
         </div>
     )

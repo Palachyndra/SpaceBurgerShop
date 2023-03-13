@@ -45,25 +45,29 @@ const MenuCreator = ({ props }) => {
    const [count, setCount] = useState(0);
    const [isOpen, setIsOpen] = React.useState(false);
 
-   const incrementCount = () => {
-      if (isOpen === false) {
-         setCount(count + 1);
-         setIsOpen(!isOpen);
-      }
-   };
+   const handleClose = () => {
+      setCount(count + 1);
+      return setIsOpen(false);
+   }
+   const handleOpen = () => {
+      return setIsOpen(true);
+   }
+
 
    return (
-      <div className={style.burger_custom_container_ingredients + " pl-4 pr-6 pb-8"} onClick={incrementCount}>
+      <div className={style.burger_custom_container_ingredients + " pl-4 pr-6 pb-8"} >
          <div className={style.up_counter}>
-            {count !== 0 ? <Counter count={count} size="default" /> : ''}
-            {isOpen && <Modal setIsOpen={setIsOpen} orderOrNot={false} modalDetails={<IngredientDetails data={props} />} />}
+            {count ? <Counter count={count} size="default" /> : ''}
          </div>
-         <img className="pl-4" src={props.image} alt={props.name} />
+         <img className="pl-4" src={props.image} alt={props.name} onClick={handleOpen} />
          <div className={style.burger_custom_container_ingredients_text}>
             <div className="text text_type_digits-default pr-2 pt-1 pb-1"> {props.price} </div>
             <CurrencyIcon type="primary" />
          </div>
          <div className="text text_type_main-default"> {props.name} </div>
+         {isOpen && <Modal title={'Детали ингредиента'} onClose={handleClose} >
+            <IngredientDetails data={props} />
+         </Modal>}
       </div>
    );
 }
