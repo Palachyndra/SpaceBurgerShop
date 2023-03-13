@@ -1,0 +1,30 @@
+.constructor_bun {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.constructor_elements {
+    max-height: 530px;
+    overflow-y: auto;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    padding-right: 4px;
+}
+.order_container{
+    display: flex;
+    align-items: center;
+}
+.padding_element {
+    padding-right: 14px;
+}
+.container {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    float: right;
+}
+.size-icon {
+    width: 33px !important;
+    height: 33px !important;
+}
