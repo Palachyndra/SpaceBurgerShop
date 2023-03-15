@@ -1,21 +1,30 @@
-import React  from 'react';
+import React from 'react';
 import ingredientType from '../../utils/types.js'
 import style from './burger-constructor.module.css';
-import {ConstructorElement, Button, CurrencyIcon, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
+import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import datafile from '../../utils/order.js'
-
+import Modal from '../modal/modal'
+import OrderDetails from '../order-details/order-details'
 
 function sumOrder(data) {
     let sumPrice = 0;
     data.order.map(price => sumPrice = sumPrice + price.price);
     return sumPrice;
 }
-   
-const BurgerConstructor = () => {
-   const data = datafile;
-   let sumPrice = sumOrder(data);
-   
-   return (
+
+const BurgerConstructor = ({ dataOrders }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    const data = datafile;
+    let sumPrice = sumOrder(data);
+
+    const handleClose = () => {
+        return setIsOpen(false);
+    }
+    const handleOpen = () => {
+        return setIsOpen(true);
+    }
+
+    return (
         <div className="ml-10 pb-10">
             <div className={style.constructor_bun} >
                 {data.order.map((prop) => {
@@ -23,10 +32,10 @@ const BurgerConstructor = () => {
                         <CheckTopBun prop={prop} key={prop._id} />
                     )
                 })}
-                <div className={style.constructor_elements  + ' custom-scroll'}>
+                <div className={style.constructor_elements + ' custom-scroll'}>
                     {data.order.map((prop) => {
                         return (
-                         <CheckMiddleOrder prop={prop} key={prop._id} /> 
+                            <CheckMiddleOrder prop={prop} key={prop._id} />
                         )
                     })}
                 </div>
@@ -37,40 +46,45 @@ const BurgerConstructor = () => {
                 })}
             </div>
             <div className={style.container + " pt-10"}>
-                <div className="pr-10 text text_type_digits-medium"> {sumPrice} <CurrencyIcon className={style.size_icon} type="primary"/> </div>
-                <Button htmlType="button" type="primary" size="large">
+                <div className="pr-10 text text_type_digits-medium"> {sumPrice} <CurrencyIcon className={style.size_icon} type="primary" /> </div>
+                <Button htmlType="button" type="primary" size="large" onClick={handleOpen}>
                     Оформить заказ
                 </Button>
+                {isOpen && <Modal title={''} onClose={handleClose} >
+                    <OrderDetails />
+                </Modal>}
             </div>
         </div>
     )
 }
-const CheckTopBun = ({prop}) => {
+
+
+const CheckTopBun = ({ prop }) => {
     return (
         <>
-        {prop.type === "top" && (
-        <div>
-            <TopBun props={prop} key={prop._id} />
-        </div> 
-        )}
+            {prop.type === "top" && (
+                <div>
+                    <TopBun props={prop} key={prop._id} />
+                </div>
+            )}
         </>
     )
 }
 
-const CheckBottomBun = ({prop}) => {
+const CheckBottomBun = ({ prop }) => {
     return (
         <>
-        {prop.type === "bottom" && (
-        <div>
-            <BottomBun props={prop} key={prop._id} />
-        </div> 
-        )}
+            {prop.type === "bottom" && (
+                <div>
+                    <BottomBun props={prop} key={prop._id} />
+                </div>
+            )}
         </>
     )
 }
 
 
-const CheckMiddleOrder = ({prop}) => {
+const CheckMiddleOrder = ({ prop }) => {
     return (
         <div key={prop._id}>
             {(prop.type !== "top" && prop.type !== "bottom") && (<MiddleOrder props={prop} key={prop._id} />)}
@@ -79,7 +93,7 @@ const CheckMiddleOrder = ({prop}) => {
 }
 
 
-const TopBun = ({props}) => {
+const TopBun = ({ props }) => {
     return (
         <div className={style.container + ' ' + style.padding_element} >
             <ConstructorElement
@@ -93,7 +107,7 @@ const TopBun = ({props}) => {
     )
 }
 
-const BottomBun = ({props}) => {
+const BottomBun = ({ props }) => {
     return (
         <>
             <div className={style.container + ' ' + style.padding_element} >
@@ -109,7 +123,7 @@ const BottomBun = ({props}) => {
     )
 }
 
-const MiddleOrder = ({props}) => {
+const MiddleOrder = ({ props }) => {
     return (
         <div className={style.order_container}>
             <DragIcon type="primary" />
