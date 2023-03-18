@@ -5,6 +5,7 @@ import ingredientType from '../../utils/types.js'
 import Modal from '../modal/modal'
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientDetails from '../ingredient-details/ingredient-details'
+import { DataContext, DataOrder, DataSumOrder } from '../../utils/context.js'
 
 const BurgerDataMenu = ({ burgerIngredients }) => {
    const [current, setCurrent] = React.useState('bun');
@@ -20,20 +21,20 @@ const BurgerDataMenu = ({ burgerIngredients }) => {
          <div className={style.size + " custom-scroll"}>
             <div className="text text_type_main-medium"> Булки </div>
             <div className={style.burger_custom_container + " pt-6"}>
-               {burgerIngredients.bun.map((prop) => {
-                  return <MenuCreator key={prop._id} props={prop} />
+               {burgerIngredients.bun.map((prop, index) => {
+                  return <MenuCreator key={prop._id + index} props={prop} />
                })}
             </div>
             <div className="pt-2 pb-6 text text_type_main-medium"> Соусы </div>
             <div className={style.burger_custom_container}>
-               {burgerIngredients.souce.map((prop) => {
-                  return <MenuCreator key={prop._id} props={prop} />
+               {burgerIngredients.souce.map((prop, index) => {
+                  return <MenuCreator key={prop._id + index} props={prop} />
                })}
             </div>
             <div className="pt-2 pb-6 text text_type_main-medium"> Начинки </div>
             <div className={style.burger_custom_container}>
-               {burgerIngredients.main.map((prop) => {
-                  return <MenuCreator key={prop._id} props={prop} />
+               {burgerIngredients.main.map((prop, index) => {
+                  return <MenuCreator key={prop._id + index} props={prop} />
                })}
             </div>
          </div>
@@ -44,20 +45,69 @@ const BurgerDataMenu = ({ burgerIngredients }) => {
 const MenuCreator = ({ props }) => {
    const [count, setCount] = useState(0);
    const [isOpen, setIsOpen] = React.useState(false);
+   const { dataOrders, setDataOrders } = React.useContext(DataOrder);
+   const { sumDispatcher } = React.useContext(DataSumOrder);
+
+   Object.assign(props, props, { count: count });
 
    const handleClose = () => {
       setCount(count + 1);
-      return setIsOpen(false);
+      var arrDataOrders = {};
+
+      if (props.type === "bun") {
+         arrDataOrders = [{
+            _id: props._id,
+            image_mobile: props.image_mobile,
+            name: props.name,
+            price: props.price,
+            type: "top",
+            isLocked: "true"
+         },
+         {
+            _id: props._id,
+            image_mobile: props.image_mobile,
+            name: props.name,
+            price: props.price,
+            type: "bottom",
+            isLocked: "true"
+         }
+         ];
+      } else {
+         arrDataOrders = [{
+            _id: props._id,
+            image_mobile: props.image_mobile,
+            name: props.name,
+            price: props.price,
+         },]
+      }
+
+      const arrReturn = Array.from(dataOrders).concat(arrDataOrders);
+      sumDispatcher({ type: "increment", payload: arrReturn });
+      setIsOpen(false);
+      return setDataOrders(arrReturn);
    }
+
    const handleOpen = () => {
-      return setIsOpen(true);
+      setIsOpen(true);
+      if (Object.keys(dataOrders).length !== 0 && props.type === "bun") {
+
+         // Доделать счетчик
+         // props.count = setCount(0);
+         // const id = dataOrders[0]._id.split('-')[0];
+         // const found = () => test222(id);
+         // console.log(found);
+
+
+         return setDataOrders((items) =>
+            items.filter((item) => item.type !== "top" && item.type !== "bottom"));
+      }
    }
 
 
    return (
       <div className={style.burger_custom_container_ingredients + " pl-4 pr-6 pb-8"} >
          <div className={style.up_counter}>
-            {count ? <Counter count={count} size="default" /> : ''}
+            {props.count ? <Counter count={count} size="default" /> : ''}
          </div>
          <img className="pl-4" src={props.image} alt={props.name} onClick={handleOpen} />
          <div className={style.burger_custom_container_ingredients_text}>
@@ -73,9 +123,11 @@ const MenuCreator = ({ props }) => {
 }
 
 
-const BurgerIngredients = ({ burgerIngredients }) => {
+const BurgerIngredients = () => {
+   const { dataBurgers } = React.useContext(DataContext);
+
    return (
-      <BurgerDataMenu burgerIngredients={burgerIngredients} />
+      <BurgerDataMenu burgerIngredients={dataBurgers.data} />
    );
 };
 

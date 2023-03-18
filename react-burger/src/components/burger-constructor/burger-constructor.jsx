@@ -2,20 +2,14 @@ import React from 'react';
 import ingredientType from '../../utils/types.js'
 import style from './burger-constructor.module.css';
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import datafile from '../../utils/order.js'
 import Modal from '../modal/modal'
 import OrderDetails from '../order-details/order-details'
+import { DataOrder, DataSumOrder } from '../../utils/context.js'
 
-function sumOrder(data) {
-    let sumPrice = 0;
-    data.order.map(price => sumPrice = sumPrice + price.price);
-    return sumPrice;
-}
-
-const BurgerConstructor = ({ dataOrders }) => {
+const BurgerConstructor = () => {
     const [isOpen, setIsOpen] = React.useState(false);
-    const data = datafile;
-    let sumPrice = sumOrder(data);
+    const { dataOrders } = React.useContext(DataOrder);
+    const { sumState } = React.useContext(DataSumOrder);
 
     const handleClose = () => {
         return setIsOpen(false);
@@ -27,26 +21,30 @@ const BurgerConstructor = ({ dataOrders }) => {
     return (
         <div className="ml-10 pb-10">
             <div className={style.constructor_bun} >
-                {data.order.map((prop) => {
-                    return (
-                        <CheckTopBun prop={prop} key={prop._id} />
-                    )
-                })}
-                <div className={style.constructor_elements + ' custom-scroll'}>
-                    {data.order.map((prop) => {
-                        return (
-                            <CheckMiddleOrder prop={prop} key={prop._id} />
-                        )
-                    })}
-                </div>
-                {data.order.map((prop) => {
-                    return (
-                        <CheckBottomBun prop={prop} key={prop._id} />
-                    )
-                })}
+                {Object.keys(dataOrders).length !== 0 && (
+                    <>
+                        {dataOrders.map((prop, index) => {
+                            return (
+                                <CheckTopBun prop={prop} key={prop._id + index} />
+                            )
+                        })}
+                        <div className={style.constructor_elements + ' custom-scroll'}>
+                            {dataOrders.map((prop, index) => {
+                                return (
+                                    <CheckMiddleOrder prop={prop} key={prop._id + index} />
+                                )
+                            })}
+                        </div>
+                        {dataOrders.map((prop, index) => {
+                            return (
+                                <CheckBottomBun prop={prop} key={prop._id + index} />
+                            )
+                        })}
+                    </>
+                )}
             </div>
             <div className={style.container + " pt-10"}>
-                <div className="pr-10 text text_type_digits-medium"> {sumPrice} <CurrencyIcon className={style.size_icon} type="primary" /> </div>
+                <div className="pr-10 text text_type_digits-medium"> {sumState.sum} <CurrencyIcon className={style.size_icon} type="primary" /> </div>
                 <Button htmlType="button" type="primary" size="large" onClick={handleOpen}>
                     Оформить заказ
                 </Button>
