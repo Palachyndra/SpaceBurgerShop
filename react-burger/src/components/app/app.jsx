@@ -6,6 +6,8 @@ import main from './app.module.css'
 import { DataContext, DataOrder, DataSumOrder } from '../../utils/context.js'
 
 const sumInitialState = { sum: 0 };
+const url = "https://norma.nomoreparties.space/api/ingredients";
+
 
 function App() {
 
@@ -22,9 +24,8 @@ function App() {
     }
   }
 
-  const url = "https://norma.nomoreparties.space/api/ingredients";
   const [dataBurgers, setDataBurgers] = React.useState({});
-  const [dataOrders, setDataOrders] = React.useState({});
+  const [dataOrders, setDataOrders] = React.useState([]);
   const [sumState, sumDispatcher] = React.useReducer(reducer, sumInitialState);
 
   React.useEffect(() => {
@@ -70,7 +71,7 @@ function App() {
         <>
           <AppHeader />
           <main className={main.main}>
-            <DataContext.Provider value={{ dataBurgers, setDataBurgers }} >
+            <DataContext.Provider value={{ dataBurgers }} >
               <DataOrder.Provider value={{ dataOrders, setDataOrders, }} >
                 <DataSumOrder.Provider value={{ sumState, sumDispatcher }} >
                   <BurgerIngredients />

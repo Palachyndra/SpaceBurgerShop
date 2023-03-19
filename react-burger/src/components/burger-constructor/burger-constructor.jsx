@@ -6,16 +6,53 @@ import Modal from '../modal/modal'
 import OrderDetails from '../order-details/order-details'
 import { DataOrder, DataSumOrder } from '../../utils/context.js'
 
+const urlOrders = 'https://norma.nomoreparties.space/api/orders';
+
+
 const BurgerConstructor = () => {
     const [isOpen, setIsOpen] = React.useState(false);
     const { dataOrders } = React.useContext(DataOrder);
     const { sumState } = React.useContext(DataSumOrder);
+    const [responceData, setResponceData] = React.useState({});
 
     const handleClose = () => {
         return setIsOpen(false);
     }
+
     const handleOpen = () => {
-        return setIsOpen(true);
+        var ingredients = [];
+        Object.keys(dataOrders).forEach(key => {
+            ingredients.push(dataOrders[key]._id);
+        });
+
+        const postData = async (url = '', data = {}) => {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                return response.json();
+            }
+            response.json().then((err) => Promise.reject(err));
+        }
+
+        if (ingredients.length != 0)
+            postData(urlOrders, { ingredients: ingredients })
+                .then((data) => {
+                    setResponceData(data)
+                })
+                .catch((res) => {
+                    return Promise.reject(`Ошибка ${res.status}`);
+                });
+
+        if (responceData.success) {
+            return setIsOpen(true);
+        } else
+            return setIsOpen(false);
     }
 
     return (
@@ -49,7 +86,7 @@ const BurgerConstructor = () => {
                     Оформить заказ
                 </Button>
                 {isOpen && <Modal title={''} onClose={handleClose} >
-                    <OrderDetails />
+                    <OrderDetails responceData={responceData} />
                 </Modal>}
             </div>
         </div>

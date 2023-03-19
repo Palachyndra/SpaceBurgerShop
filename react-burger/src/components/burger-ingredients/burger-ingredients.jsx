@@ -90,14 +90,7 @@ const MenuCreator = ({ props }) => {
    const handleOpen = () => {
       setIsOpen(true);
       if (Object.keys(dataOrders).length !== 0 && props.type === "bun") {
-
-         // Доделать счетчик
-         // props.count = setCount(0);
-         // const id = dataOrders[0]._id.split('-')[0];
-         // const found = () => test222(id);
-         // console.log(found);
-
-
+         setCount(0);
          return setDataOrders((items) =>
             items.filter((item) => item.type !== "top" && item.type !== "bottom"));
       }
