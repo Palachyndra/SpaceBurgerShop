@@ -5,6 +5,15 @@ import BurgerConstructor from '../burger-constructor/burger-constructor'
 import main from './app.module.css'
 import { DataContext, DataOrder, DataSumOrder } from '../../utils/context.js'
 
+// для Redux Devtools
+// import { compose, createStore, applyMiddleware } from 'redux';
+// const composeEnhancers =
+//   typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+//     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
+//     : compose; 
+// const enhancer = composeEnhancers();  
+// const store = createStore(rootReducer, enhancer); 
+
 const sumInitialState = { sum: 0 };
 const url = "https://norma.nomoreparties.space/api/ingredients";
 
