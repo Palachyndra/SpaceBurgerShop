@@ -3,13 +3,41 @@ import AppHeader from '../app-header/app-header'
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
 import main from './app.module.css'
+import { DataContext, DataOrder, DataSumOrder } from '../../utils/context.js'
+
+// для Redux Devtools
+// import { compose, createStore, applyMiddleware } from 'redux';
+// const composeEnhancers =
+//   typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+//     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
+//     : compose; 
+// const enhancer = composeEnhancers();  
+// const store = createStore(rootReducer, enhancer); 
+
+const sumInitialState = { sum: 0 };
+const url = "https://norma.nomoreparties.space/api/ingredients";
+
 
 function App() {
-  const url = "https://norma.nomoreparties.space/api/ingredients";
+
+  function reducer(state, action) {
+    switch (action.type) {
+      case "increment":
+        var sum = 0;
+        Object.keys(action.payload).forEach(key => {
+          sum = sum + action.payload[key].price;
+        });
+        return { sum: sum };
+      default:
+        throw new Error(`Wrong type of action: ${action.type}`);
+    }
+  }
+
   const [dataBurgers, setDataBurgers] = React.useState({});
-  
+  const [dataOrders, setDataOrders] = React.useState([]);
+  const [sumState, sumDispatcher] = React.useReducer(reducer, sumInitialState);
+
   React.useEffect(() => {
-    setDataBurgers({ ...dataBurgers });
     fetch(url)
       .then((res) => {
         if (res.ok) {
@@ -52,8 +80,14 @@ function App() {
         <>
           <AppHeader />
           <main className={main.main}>
-            <BurgerIngredients burgerIngredients={dataBurgers.data} />
-            <BurgerConstructor dataOrders={dataBurgers.data} />
+            <DataContext.Provider value={{ dataBurgers }} >
+              <DataOrder.Provider value={{ dataOrders, setDataOrders, }} >
+                <DataSumOrder.Provider value={{ sumState, sumDispatcher }} >
+                  <BurgerIngredients />
+                  <BurgerConstructor />
+                </DataSumOrder.Provider>
+              </DataOrder.Provider>
+            </DataContext.Provider>
           </main>
         </>
       ) : 'Loading...'}
