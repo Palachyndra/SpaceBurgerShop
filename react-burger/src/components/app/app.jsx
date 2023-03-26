@@ -3,39 +3,14 @@ import AppHeader from '../app-header/app-header'
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
 import main from './app.module.css'
-import { DataContext, DataOrder, DataSumOrder } from '../../utils/context.js'
-
-// для Redux Devtools
-// import { compose, createStore, applyMiddleware } from 'redux';
-// const composeEnhancers =
-//   typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-//     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
-//     : compose; 
-// const enhancer = composeEnhancers();  
-// const store = createStore(rootReducer, enhancer); 
+import { DataSumOrder } from '../../utils/context.js'
+import { useSelector, useDispatch } from 'react-redux';
 
 const sumInitialState = { sum: 0 };
 const url = "https://norma.nomoreparties.space/api/ingredients";
 
-
 function App() {
-
-  function reducer(state, action) {
-    switch (action.type) {
-      case "increment":
-        var sum = 0;
-        Object.keys(action.payload).forEach(key => {
-          sum = sum + action.payload[key].price;
-        });
-        return { sum: sum };
-      default:
-        throw new Error(`Wrong type of action: ${action.type}`);
-    }
-  }
-
-  const [dataBurgers, setDataBurgers] = React.useState({});
-  const [dataOrders, setDataOrders] = React.useState([]);
-  const [sumState, sumDispatcher] = React.useReducer(reducer, sumInitialState);
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     fetch(url)
@@ -51,28 +26,47 @@ function App() {
         const main = [];
         data.data.map((prop) => {
           if (prop.type === "bun") {
+            prop.count = 0;
             bun.push(prop);
           }
           if (prop.type === "sauce") {
+            prop.count = 0;
             souce.push(prop);
           }
           if (prop.type === "main") {
+            prop.count = 0;
             main.push(prop);
           }
         });
-        setDataBurgers({
-          ...dataBurgers,
-          data: { bun: bun, main: main, souce: souce },
-          success: data.success,
-        });
+        dispatch({
+          type: "INSTALL_DATA", payload: {
+            data: { bun, main, souce },
+            success: data.success,
+          }
+        })
       })
-      .catch(() => {
-        setDataBurgers({
-          ...dataBurgers,
-          success: false,
+  }, [])
+  const dataBurgers = useSelector(store => store.cartReducer.items);
+  const [sumState, sumDispatcher] = React.useReducer(reducer, sumInitialState);
+
+  function reducer(state, action) {
+    switch (action.type) {
+      case "increment": {
+        var sum = 0;
+        Object.keys(action.payload).forEach(key => {
+          sum = sum + action.payload[key].price;
         });
-      });
-  }, []);
+        return { sum: sum };
+      }
+      case "decrease": {
+        sum = state.sum - action.payload.price;
+        return { sum: sum };
+      }
+      default:
+        throw new Error(`Wrong type of action: ${action.type}`);
+    }
+  }
+
 
   return (
     <>
@@ -80,14 +74,10 @@ function App() {
         <>
           <AppHeader />
           <main className={main.main}>
-            <DataContext.Provider value={{ dataBurgers }} >
-              <DataOrder.Provider value={{ dataOrders, setDataOrders, }} >
-                <DataSumOrder.Provider value={{ sumState, sumDispatcher }} >
-                  <BurgerIngredients />
-                  <BurgerConstructor />
-                </DataSumOrder.Provider>
-              </DataOrder.Provider>
-            </DataContext.Provider>
+            <DataSumOrder.Provider value={{ sumState, sumDispatcher }} >
+              <BurgerIngredients dataBurgers={dataBurgers} />
+              <BurgerConstructor />
+            </DataSumOrder.Provider>
           </main>
         </>
       ) : 'Loading...'}
