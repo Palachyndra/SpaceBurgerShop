@@ -6,20 +6,19 @@ import Modal from '../modal/modal'
 import OrderDetails from '../order-details/order-details'
 import { DataSumOrder } from '../../utils/context.js'
 import { useSelector, useDispatch } from 'react-redux';
-import { DndProvider, useDrop } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-
+import { useDrop, useDrag } from "react-dnd";
+import update from 'immutability-helper';
 
 const urlOrders = 'https://norma.nomoreparties.space/api/orders';
 
 const BurgerConstructor = () => {
     const dataOrders = useSelector(store => store.cartReducer.ingredientsNow);
-
     const [isOpen, setIsOpen] = React.useState(false);
     const { sumState } = React.useContext(DataSumOrder);
+    const [cards, setCards] = React.useState(dataOrders.ingredients);
+
     const dispatch = useDispatch();
     const orderNumber = useSelector(store => store.cartReducer.orderNumber);
-
 
     const handleClose = () => {
         return setIsOpen(false);
@@ -61,33 +60,106 @@ const BurgerConstructor = () => {
             return setIsOpen(false);
     }
 
+   
+    const { sumDispatcher } = React.useContext(DataSumOrder);
+    const [{ canDrop }, dropIngredients] = useDrop({
+        accept: "ingredients",
+        drop(payload) {
+            dispatch({
+                type: "CHANGE_INGREDIENTS_ITEM",
+                payload
+            });
+            // sumDispatcher({ type: "increment", payload });
+        },
+    })
+
+    const [{ canDropTopBun }, dropTopBun] = useDrop({
+        accept: "buns",
+        drop(payload) {
+            dispatch({
+                type: "CHANGE_BUNS_ITEM",
+                payload
+            });
+            // sumDispatcher({ type: "increment", payload });
+        },
+    })
+    const [{ canDropBottomBun }, dropBottomBun] = useDrop({
+        accept: "buns",
+        drop(payload) {
+            dispatch({
+                type: "CHANGE_BUNS_ITEM",
+                payload
+            });
+            // sumDispatcher({ type: "increment", payload });
+        },
+    })
+    
+    const moveCard = React.useCallback((dragIndex, hoverIndex) => {
+        setCards((prevCards) => 
+          update(prevCards, {
+            $splice: [
+              [dragIndex, 1],
+              [hoverIndex, 0, prevCards[dragIndex]],
+            ],
+          }),
+        )
+      }, [])
+
+      const renderCard = React.useCallback((card, index) => {
+        return (
+                <MiddleOrder props={card} key={card.uuid + index} index={index} id={card._id} moveCard={moveCard}/>
+        )
+      }, [])
+
     return (
         <div className="ml-10 pb-10">
-            <DndProvider backend={HTML5Backend}>
                 <div className={style.constructor_bun} >
-                    {Object.keys(dataOrders).length !== 0 && (
-                        <>
-                            {dataOrders.data.map((prop, index) => {
-                                return (
-                                    <CheckTopBun prop={prop} key={prop._id + index} />
-                                )
-                            })}
-                            <div className={style.constructor_elements + ' custom-scroll'}>
-                                {dataOrders.data.map((prop, index) => {
+                    <>
+                        {Object.keys(dataOrders.bun).length !== 0 ? (
+                            <>
+                                {Object.entries(dataOrders.bun).map(([index, prop]) => {
                                     return (
-                                        <CheckMiddleOrder prop={prop} key={prop._id + index} />
+                                        <TopBun refBun={dropTopBun} props={prop} key={prop._id + index} />
                                     )
                                 })}
+                            </>
+                        ) : (
+                            <div ref={dropTopBun} className={"constructor-element constructor-element_pos_top constructor-element__text"}>
+                                <span className={style.marging_left}>Выберите булку</span>
                             </div>
-                            {dataOrders.data.map((prop, index) => {
-                                return (
-                                    <CheckBottomBun prop={prop} key={prop._id + index} />
-                                )
-                            })}
-                        </>
-                    )}
+                        )}
+                        {Object.keys(dataOrders.ingredients).length !== 0 ? (
+                            <>
+                                <div className={style.constructor_elements + ' custom-scroll'}>
+                                    {Object.entries(dataOrders.ingredients).map(([index, prop]) => {
+                                        return (
+                                            <div style={style} key={prop.uuid}>{renderCard(prop, index)}</div>
+                                        )
+                                    })}
+                                </div>
+                            </>
+                        ) : (
+                            <div ref={dropIngredients} className={"constructor-element constructor-element__text"}>
+                                <span className={style.marging_left}>Выберите начинку</span>
+                            </div>
+                        )}
+                        {Object.keys(dataOrders.bun).length !== 0 ? (
+                            <>
+                                {Object.entries(dataOrders.bun).map(([index, prop]) => {
+                                    return (
+                                        <div>
+                                            <BottomBun refBun={dropBottomBun} props={prop} key={prop._id} />
+                                        </div>
+                                    )
+                                })}
+                            </>
+                        ) : (
+                            <div ref={dropBottomBun} className={"constructor-element constructor-element_pos_bottom constructor-element__text"}>
+                                <span className={style.marging_left}>Выберите булку</span>
+                            </div>
+                        )}
+                    </>
                 </div>
-            </DndProvider>
             <div className={style.container + " pt-10"}>
                 <div className="pr-10 text text_type_digits-medium"> {sumState.sum} <CurrencyIcon className={style.size_icon} type="primary" /> </div>
                 <Button htmlType="button" type="primary" size="large" onClick={handleOpen}>
@@ -102,112 +174,66 @@ const BurgerConstructor = () => {
 }
 
 
-const CheckTopBun = ({ prop }) => {
+const MiddleOrder = ({ props, index, id, moveCard }) => {
     const dispatch = useDispatch();
     const { sumDispatcher } = React.useContext(DataSumOrder);
-    const [{ canDrop }, drop] = useDrop({
-        accept: "sauce",
+    const ref = React.useRef(null)
+
+
+    const [{ handlerId }, dropIngredients] = useDrop({
+        accept: "ingredients",
         drop(payload) {
             dispatch({
-                type: "CHANGE_ITEM",
+                type: "CHANGE_INGREDIENTS_ITEM",
                 payload
             });
-            sumDispatcher({ type: "increment", payload });
+            // sumDispatcher({ type: "increment", payload:{bun:{}, ingredients:[payload]} });
         },
-    })
-    return (
-        <>
-            {prop.type === "top" && (
-                <div ref={drop}>
-                    <TopBun props={prop} key={prop._id} />
-                </div>
-            )}
-        </>
-    )
-}
+        hover(item, monitor) {
+            if (!ref.current) {
+                return
+            }
+            const dragIndex = item.index
+            const hoverIndex = index
 
-const CheckBottomBun = ({ prop }) => {
-    const dispatch = useDispatch();
-    const { sumDispatcher } = React.useContext(DataSumOrder);
-    const [{ canDrop }, drop] = useDrop({
-        accept: "sauce",
-        drop(payload) {
-            dispatch({
-                type: "CHANGE_ITEM",
-                payload
-            });
-            sumDispatcher({ type: "increment", payload });
-        },
-    })
-    return (
-        <>
-            {prop.type === "bottom" && (
-                <div ref={drop}>
-                    <BottomBun props={prop} key={prop._id} />
-                </div>
-            )}
-        </>
-    )
-}
+            if (dragIndex === hoverIndex) {
+                return
+            }
 
+            const hoverBoundingRect = ref.current?.getBoundingClientRect()
 
-const CheckMiddleOrder = ({ prop }) => {
-    const dispatch = useDispatch();
-    const { sumDispatcher } = React.useContext(DataSumOrder);
-    const [{ canDrop }, drop] = useDrop({
-        accept: "sauce",
-        drop(payload) {
-            dispatch({
-                type: "INCREASE_ITEM",
-                payload
-            });
-            sumDispatcher({ type: "increment", payload });
+            const hoverMiddleY =
+                (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
+
+            const clientOffset = monitor.getClientOffset()
+            const hoverClientY = clientOffset.y - hoverBoundingRect.top
+            if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+                return
+            }
+            if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+                return
+            }
+            moveCard(dragIndex, hoverIndex)
+            item.index = hoverIndex
         },
     })
 
-    return (
-        <div ref={drop} key={prop._id}>
-            {(prop.type !== "top" && prop.type !== "bottom") && (<MiddleOrder props={prop} key={prop._id} />)}
-        </div>
-    )
-}
 
+    const [{ isDragging }, drag] = useDrag({
+        type: "ingredients",
+        item: () => {
+            return { id, index }
+        },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    })
 
-const TopBun = ({ props }) => {
-    return (
-        <div className={style.container + ' ' + style.padding_element} >
-            <ConstructorElement
-                type={props.type}
-                isLocked={props.isLocked}
-                text={props.name}
-                price={props.price}
-                thumbnail={props.image_mobile}
-            />
-        </div>
-    )
-}
+    const opacity = isDragging ? 0 : 1
+    drag(dropIngredients(ref))
 
-const BottomBun = ({ props }) => {
     return (
-        <>
-            <div className={style.container + ' ' + style.padding_element} >
-                <ConstructorElement
-                    type={props.type}
-                    isLocked={props.isLocked}
-                    text={props.name}
-                    price={props.price}
-                    thumbnail={props.image_mobile}
-                />
-            </div>
-        </>
-    )
-}
-
-const MiddleOrder = ({ props }) => {
-    const dispatch = useDispatch();
-    const { sumDispatcher } = React.useContext(DataSumOrder);
-    return (
-        <div className={style.order_container}>
+        <div ref={ref} style={{opacity}} data-handler-id={handlerId} className={style.container + ' ' + style.padding_element} >
             <DragIcon type="primary" />
             <div onClick={() => handleOnClick(props, dispatch, sumDispatcher)}>
                 <ConstructorElement
@@ -220,7 +246,40 @@ const MiddleOrder = ({ props }) => {
             </div>
         </div>
     )
+
 }
+
+
+const TopBun = ({ props, refBun }) => {
+    if (props.type === "top")
+    return (
+        <div ref={refBun} className={style.container + ' ' + style.padding_element} >
+            <ConstructorElement
+                type={props.type}
+                isLocked={props.isLocked}
+                text={props.name}
+                price={props.price}
+                thumbnail={props.image_mobile}
+            />
+        </div>
+    )
+}
+
+const BottomBun = ({ props, refBun }) => {
+    if (props.type === "bottom")
+    return (
+            <div ref={refBun} className={style.container + ' ' + style.padding_element} >
+                <ConstructorElement
+                    type={props.type}
+                    isLocked={props.isLocked}
+                    text={props.name}
+                    price={props.price}
+                    thumbnail={props.image_mobile}
+                />
+            </div>
+    )
+}
+
 const handleOnClick = (props, dispatch, sumDispatcher) => {
     dispatch({ type: "DELETE_ITEM", payload: props });
     sumDispatcher({ type: "decrease", payload: props });

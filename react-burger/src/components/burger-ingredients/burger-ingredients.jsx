@@ -7,49 +7,54 @@ import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger
 import IngredientDetails from '../ingredient-details/ingredient-details'
 import { DataSumOrder } from '../../utils/context.js'
 import { useDispatch, useSelector } from 'react-redux';
-import { DndProvider, useDrag } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import { useDrag, useDrop } from "react-dnd";
+import { useInView } from "react-intersection-observer";
 
 
 const BurgerDataMenu = ({ burgerIngredients }) => {
    const [current, setCurrent] = React.useState('bun');
+   const [bunsRef, inViewBuns] = useInView({ threshold: 0 });
+   const [sauceRef, inViewSauce] = useInView({ threshold: 0 });
+   const [mainRef, inViewMain] = useInView({ threshold: 0 });
 
-   const makeScroll = (value) => {
-      let element = document.getElementById(value);
-      setCurrent(value);
-      element.scrollIntoView(value);
-   }
+   React.useEffect(() => {
+      if (inViewBuns) {
+         setCurrent("bun")
+      } else if (inViewSauce) {
+         setCurrent("sauce")
+      } else if (inViewMain) {
+         setCurrent("main")
+      }
+   })
 
    return (
       <div className={style.custom_scroll}>
          <div className="pt-10 pb-5 text text_type_main-large"> Соберите бургер </div>
          <div className={style.burger_ingredients_menu + " pb-10"} >
-            <Tab value="bun" active={current === 'bun'} onClick={makeScroll}> Булки </Tab>
-            <Tab value="souce" active={current === 'souce'} onClick={makeScroll}> Соусы </Tab>
-            <Tab value="main" active={current === 'main'} onClick={makeScroll}> Начинки </Tab>
+            <Tab active={current === 'bun'}> Булки </Tab>
+            <Tab active={current === 'sauce'}> Соусы </Tab>
+            <Tab active={current === 'main'} > Начинки </Tab>
          </div>
-         <DndProvider backend={HTML5Backend}>
             <div className={style.size + " custom-scroll"}>
-               <div className="text text_type_main-medium" id="bun"> Булки </div>
+               <div ref={bunsRef} className="text text_type_main-medium"> Булки </div>
                <div className={style.burger_custom_container + " pt-6"}>
                   {burgerIngredients.bun.map((prop, index) => {
                      return <MenuCreator key={prop._id + index} props={prop} />
                   })}
                </div>
-               <div className="pt-2 pb-6 text text_type_main-medium" id="souce"> Соусы </div>
+               <div ref={sauceRef} className="pt-2 pb-6 text text_type_main-medium"> Соусы </div>
                <div className={style.burger_custom_container}>
                   {burgerIngredients.souce.map((prop, index) => {
                      return <MenuCreator key={prop._id + index} props={prop} />
                   })}
                </div>
-               <div className="pt-2 pb-6 text text_type_main-medium" id="main"> Начинки </div>
+               <div ref={mainRef} className="pt-2 pb-6 text text_type_main-medium"> Начинки </div>
                <div className={style.burger_custom_container}>
                   {burgerIngredients.main.map((prop, index) => {
                      return <MenuCreator key={prop._id + index} props={prop} />
                   })}
                </div>
             </div>
-         </DndProvider>
       </div>
    );
 }
@@ -62,13 +67,67 @@ const MenuCreator = ({ props }) => {
    const dataOrders = useSelector(store => store.cartReducer.ingredientsNow);
    const dataProductNow = useSelector(store => store.cartReducer.productNow);
 
-   const chechIngredients = () => {
+
+   const handleOpen = () => {
+      setIsOpen(true);
+      dispatch({ type: "INCREASE_PRODUCT_ITEM", payload: props });
+
+      if (Object.keys(dataOrders.bun).length !== 0 && props.type === "bun") {
+         props.count = 0;
+         return dataOrders.bun = {};
+      }
+   }
+
+   const handleClose = () => {
       const randomInt = Math.floor(Math.random() * 100);
       const uuid = props._id + randomInt;
       var arrDataOrders = {};
 
       if (props.type === "bun") {
-         arrDataOrders = [{
+         arrDataOrders = {
+            bun: [{
+               _id: props._id,
+               image_mobile: props.image_mobile,
+               name: props.name,
+               price: props.price,
+               type: "top",
+               isLocked: "true",
+               typeClass: props.type,
+               uuid
+            },
+            {
+               _id: props._id,
+               image_mobile: props.image_mobile,
+               name: props.name,
+               price: props.price,
+               type: "bottom",
+               isLocked: "true",
+               typeClass: props.type,
+               uuid
+            }]
+         }
+         dispatch({ type: "INCREASE_ITEM_BUNS", payload: arrDataOrders });
+      } else {
+         arrDataOrders = {
+            _id: props._id,
+            image_mobile: props.image_mobile,
+            name: props.name,
+            price: props.price,
+            typeClass: props.type,
+            uuid
+         }
+         dispatch({ type: "INCREASE_ITEM_INGREDIENTS", payload: arrDataOrders });
+      }
+      props.count++
+      setIsOpen(false);
+      sumDispatcher({ type: "increment", payload: dataOrders });
+      dispatch({ type: "INCREASE_PRODUCT_ITEM", payload: {} });
+   }
+
+   const [, dragRef] = useDrag((e) => e = {
+      type: "buns",
+      item: {
+         bun: [{
             _id: props._id,
             image_mobile: props.image_mobile,
             name: props.name,
@@ -76,7 +135,7 @@ const MenuCreator = ({ props }) => {
             type: "top",
             isLocked: "true",
             typeClass: props.type,
-            uuid
+            uuid: props._id + Math.floor(Math.random() * 100)
          },
          {
             _id: props._id,
@@ -86,52 +145,25 @@ const MenuCreator = ({ props }) => {
             type: "bottom",
             isLocked: "true",
             typeClass: props.type,
-            uuid
-         }
-         ]
-      } else {
-         arrDataOrders = [{
-            _id: props._id,
-            image_mobile: props.image_mobile,
-            name: props.name,
-            price: props.price,
-            typeClass: props.type,
-            uuid
-         },]
-      }
-      const arrReturn = dataOrders.data ? Array.from(dataOrders.data).concat(arrDataOrders) : arrDataOrders;
-      return arrReturn;
-   }
-
-   const [, dragRef] = useDrag({
-      type: "sauce",
-      item: chechIngredients(),
+            uuid: props._id + Math.floor(Math.random() * 100)
+         }]
+      },
    })
 
-
-   const handleClose = () => {
-      props.count++
-      const arrReturn = chechIngredients();
-      setIsOpen(false);
-      sumDispatcher({ type: "increment", payload: arrReturn });
-      dispatch({ type: "INCREASE_PRODUCT_ITEM", payload: {} });
-
-      return dispatch({ type: "INCREASE_ITEM", payload: arrReturn });
-   }
-
-   const handleOpen = () => {
-      setIsOpen(true);
-      dispatch({ type: "INCREASE_PRODUCT_ITEM", payload: props });
-
-      if (Object.keys(dataOrders).length !== 0 && props.type === "bun") {
-         props.count = 0;
-         return dataOrders.data =
-            dataOrders.data.filter((item) => item.type !== "top" && item.type !== "bottom");
-      }
-   }
+   const [, dragRef2] = useDrag({
+      type: "ingredients",
+      item: {
+         _id: props._id,
+         image_mobile: props.image_mobile,
+         name: props.name,
+         price: props.price,
+         typeClass: props.type,
+         uuid: props._id + Math.floor(Math.random() * 100)
+      },
+   })
 
    return (
-      <div ref={dragRef} className={style.burger_custom_container_ingredients + " pl-4 pr-6 pb-8"} >
+      <div ref={props.type === "bun" ? dragRef : dragRef2} className={style.burger_custom_container_ingredients + " pl-4 pr-6 pb-8"} >
          <div className={style.up_counter}>
             {props.count ? <Counter count={props.count} size="default" /> : ''}
          </div>

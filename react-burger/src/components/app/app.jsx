@@ -5,6 +5,8 @@ import BurgerConstructor from '../burger-constructor/burger-constructor'
 import main from './app.module.css'
 import { DataSumOrder } from '../../utils/context.js'
 import { useSelector, useDispatch } from 'react-redux';
+import { DndProvider, useDrop, useDrag } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const sumInitialState = { sum: 0 };
 const url = "https://norma.nomoreparties.space/api/ingredients";
@@ -53,14 +55,24 @@ function App() {
     switch (action.type) {
       case "increment": {
         var sum = 0;
-        Object.keys(action.payload).forEach(key => {
-          sum = sum + action.payload[key].price;
+        if (Object.keys(action.payload.bun).length)
+          Object.keys(action.payload.bun).forEach(key => {
+            sum = sum + action.payload.bun[key].price;
         });
+
+        if (Object.keys(action.payload.ingredients).length)
+          Object.keys(action.payload.ingredients).forEach(key => {
+            sum = sum + action.payload.ingredients[key].price;
+          });
         return { sum: sum };
+      }
+      case "increment_in_order": {
+        sum = state.sum + action.payload.price;
+        return {sum};
       }
       case "decrease": {
         sum = state.sum - action.payload.price;
-        return { sum: sum };
+        return { sum };
       }
       default:
         throw new Error(`Wrong type of action: ${action.type}`);
@@ -75,8 +87,10 @@ function App() {
           <AppHeader />
           <main className={main.main}>
             <DataSumOrder.Provider value={{ sumState, sumDispatcher }} >
+            <DndProvider backend={HTML5Backend}>
               <BurgerIngredients dataBurgers={dataBurgers} />
               <BurgerConstructor />
+            </DndProvider>
             </DataSumOrder.Provider>
           </main>
         </>
