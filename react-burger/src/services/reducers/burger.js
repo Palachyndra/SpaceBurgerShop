@@ -1,4 +1,4 @@
-import { DELETE_ITEM, ADD_ORDER_NUMBER, INCREASE_ITEM_BUNS, INCREASE_ITEM_INGREDIENTS, INCREASE_PRODUCT_ITEM, INSTALL_DATA, CHANGE_INGREDIENTS_ITEM, CHANGE_BUNS_ITEM } from '../actions/burger';
+import { DELETE_ITEM, ADD_ORDER_NUMBER, INCREASE_ITEM_BUNS, INCREASE_ITEM_INGREDIENTS, INCREASE_PRODUCT_ITEM, INSTALL_DATA, CHANGE_INGREDIENTS_ITEM, CHANGE_BUNS_ITEM, SWITCH_ING_ITEM } from '../actions/burger';
 import { items, ingredientsNow, productNow, orderNumber } from '../initialData';
 
 const initialState = {
@@ -87,6 +87,13 @@ export const cartReducer = (state = initialState, action) => {
                     ingredients: Array.from(state.ingredientsNow.ingredients).concat(action.payload)
                 }
             };
+        }
+        case SWITCH_ING_ITEM: {
+            console.log(action.payload)
+            // return {
+            //     ...state,
+            //     ingredientsNow: { bun: state.ingredientsNow.bun, ingredients: action.payload }
+            // };
         }
         default: {
             return state;

@@ -49,20 +49,21 @@ function App() {
       })
   }, [])
   const dataBurgers = useSelector(store => store.cartReducer.items);
+  const dataOrders = useSelector(store => store.cartReducer.ingredientsNow);
   const [sumState, sumDispatcher] = React.useReducer(reducer, sumInitialState);
 
   function reducer(state, action) {
     switch (action.type) {
       case "increment": {
         var sum = 0;
-        if (Object.keys(action.payload.bun).length)
-          Object.keys(action.payload.bun).forEach(key => {
-            sum = sum + action.payload.bun[key].price;
+        if (Object.keys(dataOrders.bun).length)
+          Object.keys(dataOrders.bun).forEach(key => {
+            sum = sum + dataOrders.bun[key].price;
         });
 
-        if (Object.keys(action.payload.ingredients).length)
-          Object.keys(action.payload.ingredients).forEach(key => {
-            sum = sum + action.payload.ingredients[key].price;
+        if (Object.keys(dataOrders.ingredients).length)
+          Object.keys(dataOrders.ingredients).forEach(key => {
+            sum = sum + dataOrders.ingredients[key].price;
           });
         return { sum: sum };
       }
