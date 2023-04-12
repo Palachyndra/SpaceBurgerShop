@@ -89,11 +89,16 @@ export const cartReducer = (state = initialState, action) => {
             };
         }
         case SWITCH_ING_ITEM: {
-            console.log(action.payload)
-            // return {
-            //     ...state,
-            //     ingredientsNow: { bun: state.ingredientsNow.bun, ingredients: action.payload }
-            // };
+            const toIndex = action.payload.hoverIndex;
+            const fromIndex = action.payload.dragIndex;
+            const ingredients = [...state.ingredientsNow.ingredients];
+
+            ingredients.splice(toIndex,0,ingredients.splice(fromIndex,1)[0])
+
+            return {
+                ...state,
+                ingredientsNow: { bun: state.ingredientsNow.bun, ingredients }
+            };
         }
         default: {
             return state;

@@ -23,6 +23,7 @@
     text-align: center;
     align-items: center;
     float: right;
+    min-width: 500px;
 }
 .size-icon {
     width: 33px !important;
@@ -30,5 +31,5 @@
 }
 
 .marging_left {
-    margin-left: 20%;
+    margin-left: 33%;
 }

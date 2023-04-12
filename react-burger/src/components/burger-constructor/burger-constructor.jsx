@@ -7,7 +7,6 @@ import OrderDetails from '../order-details/order-details'
 import { DataSumOrder } from '../../utils/context.js'
 import { useSelector, useDispatch } from 'react-redux';
 import { useDrop, useDrag } from "react-dnd";
-import update from 'immutability-helper';
 
 const urlOrders = 'https://norma.nomoreparties.space/api/orders';
 
@@ -15,6 +14,11 @@ const BurgerConstructor = () => {
     const dataOrders = useSelector(store => store.cartReducer.ingredientsNow);
     const [isOpen, setIsOpen] = React.useState(false);
     const { sumState } = React.useContext(DataSumOrder);
+    const [cards, setCards] = React.useState(dataOrders.ingredients);
+
+    React.useEffect(() => {
+        setCards(dataOrders.ingredients)
+    })
 
     const dispatch = useDispatch();
     const orderNumber = useSelector(store => store.cartReducer.orderNumber);
@@ -90,20 +94,15 @@ const BurgerConstructor = () => {
                 type: "CHANGE_BUNS_ITEM",
                 payload
             });
-            // sumDispatcher({ type: "increment", payload });
+            sumDispatcher({ type: "increment", payload });
         },
     })
 
     const moveCard = React.useCallback((dragIndex, hoverIndex) =>
         dispatch({
             type: "SWITCH_ING_ITEM",
-            payload: update(dataOrders.ingredients, {
-                $splice: [
-                    [dragIndex, 1],
-                    [hoverIndex, 0, dataOrders.ingredients[dragIndex]],
-                ],
-            }),
-        }),
+            payload: { dragIndex, hoverIndex }
+        })
     )
 
     const renderCard = React.useCallback((card, index) => {
@@ -137,7 +136,7 @@ const BurgerConstructor = () => {
                     )}
                     {Object.keys(dataOrders.ingredients).length !== 0 ? (
                         <div ref={dropIngredients} className={style.constructor_elements + ' custom-scroll'}>
-                            {Object.entries(dataOrders.ingredients).map(([i, card]) => renderCard(card, i))}
+                            {Object.entries(cards).map(([i, card]) => renderCard(card, i))}
                         </div>
                     ) : (
                         <div ref={dropIngredients} className={"constructor-element constructor-element__text"}>
@@ -161,9 +160,13 @@ const BurgerConstructor = () => {
             </div>
             <div className={style.container + " pt-10"}>
                 <div className="pr-10 text text_type_digits-medium"> {sumState.sum} <CurrencyIcon className={style.size_icon} type="primary" /> </div>
-                <Button htmlType="button" type="primary" size="large" onClick={handleOpen}>
-                    Оформить заказ
-                </Button>
+                <>
+                    {Object.keys(dataOrders.bun).length !== 0 && Object.keys(dataOrders.ingredients).length !== 0 && (
+                        <Button htmlType="button" type="primary" size="large" onClick={handleOpen}>
+                            Оформить заказ
+                        </Button>
+                    )}
+                </>
                 {isOpen && <Modal title={''} onClose={handleClose} >
                     <OrderDetails responceData={orderNumber} />
                 </Modal>}
