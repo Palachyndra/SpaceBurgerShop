@@ -35,7 +35,6 @@ const BurgerConstructor = () => {
         });
 
         const postData = async (url = '', data = {}) => {
-
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -180,7 +179,6 @@ const BurgerConstructor = () => {
     )
 }
 
-
 const MiddleOrder = ({ id, props, index, moveCard }) => {
     const dispatch = useDispatch();
     const ref = React.useRef(null)
@@ -249,7 +247,6 @@ const MiddleOrder = ({ id, props, index, moveCard }) => {
         </div>
     )
 }
-
 
 const TopBun = ({ props, refBun }) => {
     if (props.type === "top")

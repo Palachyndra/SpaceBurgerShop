@@ -2,6 +2,7 @@ import React from 'react';
 import AppHeader from '../app-header/app-header'
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
+import { INSTALL_DATA } from '../../services/actions/burger.js';
 import main from './app.module.css'
 import { urlApi } from '../../utils/context.js'
 import { useSelector, useDispatch } from 'react-redux';
@@ -40,12 +41,15 @@ function App() {
           }
         });
         dispatch({
-          type: "INSTALL_DATA", payload: {
+          type: INSTALL_DATA, payload: {
             data: { bun, main, souce },
             success: data.success,
           }
         })
       })
+      .catch((res) => {
+        return Promise.reject(`Ошибка ${res.status}`);
+      });
   }, [])
   const dataBurgers = useSelector(store => store.cartReducer.items);
 

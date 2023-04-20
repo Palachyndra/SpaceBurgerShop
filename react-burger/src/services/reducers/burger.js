@@ -37,10 +37,11 @@ export const cartReducer = (state = initialState, action) => {
         case DELETE_ITEM: {
             let ingredients = [];
             let deleteItem = [];
-
             Object.keys(state.ingredientsNow.ingredients).forEach(key => {
                 if (state.ingredientsNow.ingredients[key].uuid !== action.payload.uuid) {
                     ingredients.push(state.ingredientsNow.ingredients[key]);
+                    deleteItem = action.payload._id;
+                } else {
                     deleteItem = action.payload._id;
                 }
             })
@@ -75,14 +76,36 @@ export const cartReducer = (state = initialState, action) => {
             };
         }
         case CHANGE_BUNS_ITEM: {
+            
+            if (state.items.data.bun.length) {
+                state.items.data.bun.forEach(item => {
+                    item.count = 0;
+                });
+                state.items.data.bun.filter((item) => item._id === action.payload.bun[0]._id)
+                    .map(item => item.count = 2
+                )
+            }
+
             return {
                 ...state,
                 ingredientsNow: { bun: action.payload.bun, ingredients: state.ingredientsNow.ingredients }
             };
         }
         case CHANGE_INGREDIENTS_ITEM: {
+
+            if (data.typeClass === 'sauce' && state.items.data.souce.length !== 0) {
+                state.items.data.souce.filter((item) =>
+                    item._id === data._id && item.count++);
+            }
+
+            if (data.typeClass === 'main' && state.items.data.main.length !== 0) {
+                state.items.data.main.filter((item) =>
+                    item._id === data._id && item.count++);
+            }
+
             return {
                 ...state,
+                items: state.items,
                 ingredientsNow: {
                     bun: state.ingredientsNow.bun,
                     ingredients: Array.from(state.ingredientsNow.ingredients).concat(action.payload)
@@ -106,7 +129,7 @@ export const cartReducer = (state = initialState, action) => {
             Object.keys(action.payload.bun).forEach(key => {
                 sum = sum + action.payload.bun[key].price;
             });
-            
+
             if (Object.keys(state.ingredientsNow.ingredients).length)
                 Object.keys(state.ingredientsNow.ingredients).forEach(key => {
                     sum = sum + state.ingredientsNow.ingredients[key].price;

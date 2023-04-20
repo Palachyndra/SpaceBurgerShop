@@ -64,12 +64,18 @@ const MenuCreator = ({ props }) => {
    const [isOpen, setIsOpen] = React.useState(false);
 
    const dispatch = useDispatch();
-
    const handleOpen = () => {
       setIsOpen(true);
       dispatch({ type: INCREASE_PRODUCT_ITEM, payload: props });
    }
 
+   const burgerIngredients = useSelector(store => store.cartReducer.ingredientsNow);
+   const [count, setIngredients] = React.useState(burgerIngredients);
+   
+   React.useEffect(() => {
+      setIngredients(burgerIngredients);
+   })
+   
    const handleClose = () => {
       setIsOpen(false);
    }
