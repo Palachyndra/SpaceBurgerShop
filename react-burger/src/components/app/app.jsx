@@ -3,13 +3,12 @@ import AppHeader from '../app-header/app-header'
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
 import main from './app.module.css'
-import { DataSumOrder } from '../../utils/context.js'
+import { urlApi } from '../../utils/context.js'
 import { useSelector, useDispatch } from 'react-redux';
-import { DndProvider, useDrop, useDrag } from "react-dnd";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-const sumInitialState = { sum: 0 };
-const url = "https://norma.nomoreparties.space/api/ingredients";
+const url = urlApi + "ingredients";
 
 function App() {
   const dispatch = useDispatch();
@@ -49,37 +48,6 @@ function App() {
       })
   }, [])
   const dataBurgers = useSelector(store => store.cartReducer.items);
-  const dataOrders = useSelector(store => store.cartReducer.ingredientsNow);
-  const [sumState, sumDispatcher] = React.useReducer(reducer, sumInitialState);
-
-  function reducer(state, action) {
-    switch (action.type) {
-      case "increment": {
-        var sum = 0;
-        if (Object.keys(dataOrders.bun).length)
-          Object.keys(dataOrders.bun).forEach(key => {
-            sum = sum + dataOrders.bun[key].price;
-        });
-
-        if (Object.keys(dataOrders.ingredients).length)
-          Object.keys(dataOrders.ingredients).forEach(key => {
-            sum = sum + dataOrders.ingredients[key].price;
-          });
-        return { sum: sum };
-      }
-      case "increment_in_order": {
-        sum = state.sum + action.payload.price;
-        return {sum};
-      }
-      case "decrease": {
-        sum = state.sum - action.payload.price;
-        return { sum };
-      }
-      default:
-        throw new Error(`Wrong type of action: ${action.type}`);
-    }
-  }
-
 
   return (
     <>
@@ -87,12 +55,10 @@ function App() {
         <>
           <AppHeader />
           <main className={main.main}>
-            <DataSumOrder.Provider value={{ sumState, sumDispatcher }} >
             <DndProvider backend={HTML5Backend}>
-              <BurgerIngredients dataBurgers={dataBurgers} />
+              <BurgerIngredients />
               <BurgerConstructor />
             </DndProvider>
-            </DataSumOrder.Provider>
           </main>
         </>
       ) : 'Loading...'}

@@ -1,21 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import style from './burger-ingredients.module.css';
+import { INCREASE_PRODUCT_ITEM } from '../../services/actions/burger.js';
 import ingredientType from '../../utils/types.js'
 import Modal from '../modal/modal'
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientDetails from '../ingredient-details/ingredient-details'
-import { DataSumOrder } from '../../utils/context.js'
 import { useDispatch, useSelector } from 'react-redux';
-import { useDrag, useDrop } from "react-dnd";
+import { useDrag } from "react-dnd";
 import { useInView } from "react-intersection-observer";
 
 
-const BurgerDataMenu = ({ burgerIngredients }) => {
+const BurgerDataMenu = () => {
    const [current, setCurrent] = React.useState('bun');
    const [bunsRef, inViewBuns] = useInView({ threshold: 0 });
    const [sauceRef, inViewSauce] = useInView({ threshold: 0 });
    const [mainRef, inViewMain] = useInView({ threshold: 0 });
+   const burgerIngredients = useSelector(store => store.cartReducer.items.data);
 
    React.useEffect(() => {
       if (inViewBuns) {
@@ -38,20 +39,20 @@ const BurgerDataMenu = ({ burgerIngredients }) => {
             <div className={style.size + " custom-scroll"}>
                <div ref={bunsRef} className="text text_type_main-medium"> Булки </div>
                <div className={style.burger_custom_container + " pt-6"}>
-                  {burgerIngredients.bun.map((prop, index) => {
-                     return <MenuCreator key={prop._id + index} props={prop} />
+                  {burgerIngredients.bun.map((prop) => {
+                     return <MenuCreator key={prop._id} props={prop} />
                   })}
                </div>
                <div ref={sauceRef} className="pt-2 pb-6 text text_type_main-medium"> Соусы </div>
                <div className={style.burger_custom_container}>
-                  {burgerIngredients.souce.map((prop, index) => {
-                     return <MenuCreator key={prop._id + index} props={prop} />
+                  {burgerIngredients.souce.map((prop) => {
+                     return <MenuCreator key={prop._id} props={prop} />
                   })}
                </div>
                <div ref={mainRef} className="pt-2 pb-6 text text_type_main-medium"> Начинки </div>
                <div className={style.burger_custom_container}>
-                  {burgerIngredients.main.map((prop, index) => {
-                     return <MenuCreator key={prop._id + index} props={prop} />
+                  {burgerIngredients.main.map((prop) => {
+                     return <MenuCreator key={prop._id} props={prop} />
                   })}
                </div>
             </div>
@@ -61,67 +62,16 @@ const BurgerDataMenu = ({ burgerIngredients }) => {
 
 const MenuCreator = ({ props }) => {
    const [isOpen, setIsOpen] = React.useState(false);
-   const { sumDispatcher } = React.useContext(DataSumOrder);
 
    const dispatch = useDispatch();
-   const dataOrders = useSelector(store => store.cartReducer.ingredientsNow);
-   const dataProductNow = useSelector(store => store.cartReducer.productNow);
-
 
    const handleOpen = () => {
       setIsOpen(true);
-      dispatch({ type: "INCREASE_PRODUCT_ITEM", payload: props });
-
-      if (Object.keys(dataOrders.bun).length !== 0 && props.type === "bun") {
-         props.count = 0;
-         return dataOrders.bun = {};
-      }
+      dispatch({ type: INCREASE_PRODUCT_ITEM, payload: props });
    }
 
    const handleClose = () => {
-      const randomInt = Math.floor(Math.random() * 100);
-      const uuid = props._id + randomInt;
-      var arrDataOrders = {};
-
-      if (props.type === "bun") {
-         arrDataOrders = {
-            bun: [{
-               _id: props._id,
-               image_mobile: props.image_mobile,
-               name: props.name,
-               price: props.price,
-               type: "top",
-               isLocked: "true",
-               typeClass: props.type,
-               uuid
-            },
-            {
-               _id: props._id,
-               image_mobile: props.image_mobile,
-               name: props.name,
-               price: props.price,
-               type: "bottom",
-               isLocked: "true",
-               typeClass: props.type,
-               uuid
-            }]
-         }
-         dispatch({ type: "INCREASE_ITEM_BUNS", payload: arrDataOrders });
-      } else {
-         arrDataOrders = {
-            _id: props._id,
-            image_mobile: props.image_mobile,
-            name: props.name,
-            price: props.price,
-            typeClass: props.type,
-            uuid
-         }
-         dispatch({ type: "INCREASE_ITEM_INGREDIENTS", payload: arrDataOrders });
-      }
-      props.count++
       setIsOpen(false);
-      sumDispatcher({ type: "increment", payload: dataOrders });
-      dispatch({ type: "INCREASE_PRODUCT_ITEM", payload: {} });
    }
 
    const [, dragRef] = useDrag((e) => e = {
@@ -174,20 +124,14 @@ const MenuCreator = ({ props }) => {
          </div>
          <div className="text text_type_main-default"> {props.name} </div>
          {isOpen && <Modal title={'Детали ингредиента'} onClose={handleClose} >
-            <IngredientDetails data={dataProductNow.data} />
+            <IngredientDetails />
          </Modal>}
       </div>
    );
 }
 
 
-const BurgerIngredients = ({ dataBurgers }) => {
-   return (
-      <BurgerDataMenu burgerIngredients={dataBurgers.data} />
-   );
-};
-
 MenuCreator.propTypes = { burgerIngredients: ingredientType, };
 BurgerDataMenu.propTypes = PropTypes.shape({ burgerIngredients: ingredientType }).isRequired;
 
-export default BurgerIngredients;
+export default BurgerDataMenu;

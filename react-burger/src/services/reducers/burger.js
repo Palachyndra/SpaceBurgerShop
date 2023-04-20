@@ -1,12 +1,13 @@
-import { DELETE_ITEM, ADD_ORDER_NUMBER, INCREASE_ITEM_BUNS, INCREASE_ITEM_INGREDIENTS, INCREASE_PRODUCT_ITEM, INSTALL_DATA, CHANGE_INGREDIENTS_ITEM, CHANGE_BUNS_ITEM, SWITCH_ING_ITEM } from '../actions/burger';
-import { items, ingredientsNow, productNow, orderNumber } from '../initialData';
+import { DELETE_ITEM, ADD_ORDER_NUMBER, INCREASE_ITEM_BUNS, INCREASE_ITEM_INGREDIENTS, INCREASE_PRODUCT_ITEM, INSTALL_DATA, CHANGE_INGREDIENTS_ITEM, CHANGE_BUNS_ITEM, SWITCH_ING_ITEM, INCREASE_SUM_ORDER, INCREASE_ORDER, DECREASE_SUM_ORDER } from '../actions/burger';
+import { items, ingredientsNow, productNow, orderNumber, sumOrders } from '../initialData';
 
 const initialState = {
     items,
     ingredientsNow,
     productNow,
     orderNumber,
-    typeClass: ["default", "bun", "sauce", "main"]
+    typeClass: ["default", "bun", "sauce", "main"],
+    sumOrders
 };
 
 export const cartReducer = (state = initialState, action) => {
@@ -93,11 +94,40 @@ export const cartReducer = (state = initialState, action) => {
             const fromIndex = action.payload.dragIndex;
             const ingredients = [...state.ingredientsNow.ingredients];
 
-            ingredients.splice(toIndex,0,ingredients.splice(fromIndex,1)[0])
+            ingredients.splice(toIndex, 0, ingredients.splice(fromIndex, 1)[0])
 
             return {
                 ...state,
                 ingredientsNow: { bun: state.ingredientsNow.bun, ingredients }
+            };
+        }
+        case INCREASE_ORDER: {
+            let sum = 0;
+            Object.keys(action.payload.bun).forEach(key => {
+                sum = sum + action.payload.bun[key].price;
+            });
+            
+            if (Object.keys(state.ingredientsNow.ingredients).length)
+                Object.keys(state.ingredientsNow.ingredients).forEach(key => {
+                    sum = sum + state.ingredientsNow.ingredients[key].price;
+                });
+            return {
+                ...state,
+                sumOrders: sum
+            };
+        }
+        case INCREASE_SUM_ORDER: {
+            const sum = state.sumOrders + action.payload.price;
+            return {
+                ...state,
+                sumOrders: sum
+            };
+        }
+        case DECREASE_SUM_ORDER: {
+            const sum = state.sumOrders - action.payload.price;
+            return {
+                ...state,
+                sumOrders: sum
             };
         }
         default: {

@@ -1,9 +1,10 @@
-import React from 'react';
 import styles from './ingredient-details.module.css';
 import ingredientType from '../../utils/types.js'
+import { useSelector } from 'react-redux';
 import {} from '@ya.praktikum/react-developer-burger-ui-components';
 
-const IngredientDetails = ({ data }) => {
+const IngredientDetails = () => {
+   const data = useSelector(store => store.cartReducer.productNow.data);
     return (
         <div>
             <div className={styles.photo}> <img src={data.image_large} alt={data.name} /> </div>

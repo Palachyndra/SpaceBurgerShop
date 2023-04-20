@@ -1,7 +1,7 @@
-import React from 'react';
 import styles from './order-details.module.css';
 import { } from '@ya.praktikum/react-developer-burger-ui-components';
 import donePhoto from '../../images/done.png';
+import number from '../../utils/types.js';
 
 const OrderDetails = ({responceData}) => {
     return (
@@ -16,5 +16,8 @@ const OrderDetails = ({responceData}) => {
         </div>
     )
 }
+OrderDetails.propTypes =
+    { responceData: number, };
+
 
 export default OrderDetails;

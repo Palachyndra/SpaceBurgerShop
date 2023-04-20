@@ -1,19 +1,19 @@
 import React from 'react';
-import ingredientType from '../../utils/types.js'
 import style from './burger-constructor.module.css';
+import { ADD_ORDER_NUMBER, INCREASE_SUM_ORDER, CHANGE_BUNS_ITEM, INCREASE_ORDER, SWITCH_ING_ITEM, CHANGE_INGREDIENTS_ITEM, DELETE_ITEM, DECREASE_SUM_ORDER } from '../../services/actions/burger.js';
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal'
 import OrderDetails from '../order-details/order-details'
-import { DataSumOrder } from '../../utils/context.js'
+import { urlApi } from '../../utils/context.js'
 import { useSelector, useDispatch } from 'react-redux';
 import { useDrop, useDrag } from "react-dnd";
 
-const urlOrders = 'https://norma.nomoreparties.space/api/orders';
+const urlOrders = urlApi + 'orders';
 
 const BurgerConstructor = () => {
     const dataOrders = useSelector(store => store.cartReducer.ingredientsNow);
+    const sumState = useSelector(store => store.cartReducer.sumOrders);
     const [isOpen, setIsOpen] = React.useState(false);
-    const { sumState } = React.useContext(DataSumOrder);
     const [cards, setCards] = React.useState(dataOrders.ingredients);
 
     React.useEffect(() => {
@@ -29,7 +29,7 @@ const BurgerConstructor = () => {
 
 
     const handleOpen = () => {
-        var ingredients = [];
+        let ingredients = [];
         Object.keys(dataOrders.ingredients).forEach(key => {
             ingredients.push(dataOrders.ingredients[key]._id);
         });
@@ -53,7 +53,7 @@ const BurgerConstructor = () => {
         if (ingredients.length != 0)
             postData(urlOrders, { ingredients })
                 .then((data) => {
-                    return dispatch({ type: "ADD_ORDER_NUMBER", payload: data });
+                    return dispatch({ type: ADD_ORDER_NUMBER, payload: data });
                 })
                 .catch((res) => {
                     return Promise.reject(`Ошибка ${res.status}`);
@@ -65,15 +65,14 @@ const BurgerConstructor = () => {
     }
 
 
-    const { sumDispatcher } = React.useContext(DataSumOrder);
     const [{ canDrop }, dropIngredients] = useDrop({
         accept: "ingredients",
         drop(payload) {
             dispatch({
-                type: "CHANGE_INGREDIENTS_ITEM",
+                type: CHANGE_INGREDIENTS_ITEM,
                 payload
             });
-            sumDispatcher({ type: "increment_in_order", payload });
+            dispatch({ type: INCREASE_SUM_ORDER, payload });
         },
     })
 
@@ -81,26 +80,32 @@ const BurgerConstructor = () => {
         accept: "buns",
         drop(payload) {
             dispatch({
-                type: "CHANGE_BUNS_ITEM",
+                type: CHANGE_BUNS_ITEM,
                 payload
             });
-            sumDispatcher({ type: "increment", payload });
+            dispatch({
+                type: INCREASE_ORDER,
+                payload
+            });
         },
     })
     const [{ canDropBottomBun }, dropBottomBun] = useDrop({
         accept: "buns",
         drop(payload) {
             dispatch({
-                type: "CHANGE_BUNS_ITEM",
+                type: CHANGE_BUNS_ITEM,
                 payload
             });
-            sumDispatcher({ type: "increment", payload });
+            dispatch({
+                type: INCREASE_ORDER,
+                payload
+            });
         },
     })
 
     const moveCard = React.useCallback((dragIndex, hoverIndex) =>
         dispatch({
-            type: "SWITCH_ING_ITEM",
+            type: SWITCH_ING_ITEM,
             payload: { dragIndex, hoverIndex }
         })
     )
@@ -159,7 +164,7 @@ const BurgerConstructor = () => {
                 </>
             </div>
             <div className={style.container + " pt-10"}>
-                <div className="pr-10 text text_type_digits-medium"> {sumState.sum} <CurrencyIcon className={style.size_icon} type="primary" /> </div>
+                <div className="pr-10 text text_type_digits-medium"> {sumState} <CurrencyIcon className={style.size_icon} type="primary" /> </div>
                 <>
                     {Object.keys(dataOrders.bun).length !== 0 && Object.keys(dataOrders.ingredients).length !== 0 && (
                         <Button htmlType="button" type="primary" size="large" onClick={handleOpen}>
@@ -178,7 +183,6 @@ const BurgerConstructor = () => {
 
 const MiddleOrder = ({ id, props, index, moveCard }) => {
     const dispatch = useDispatch();
-    const { sumDispatcher } = React.useContext(DataSumOrder);
     const ref = React.useRef(null)
 
     const [{ handlerId }, drop] = useDrop({
@@ -233,7 +237,7 @@ const MiddleOrder = ({ id, props, index, moveCard }) => {
     return (
         <div ref={ref} style={{ opacity }} data-handler-id={handlerId} className={style.container + ' ' + style.padding_element} >
             <DragIcon type="primary" />
-            <div onClick={() => handleOnClick(props, dispatch, sumDispatcher)}>
+            <div onClick={() => handleOnClick(props, dispatch)}>
                 <ConstructorElement
                     type={props.type}
                     isLocked={props.isLocked}
@@ -277,11 +281,9 @@ const BottomBun = ({ props, refBun }) => {
         )
 }
 
-const handleOnClick = (props, dispatch, sumDispatcher) => {
-    dispatch({ type: "DELETE_ITEM", payload: props });
-    sumDispatcher({ type: "decrease", payload: props });
+const handleOnClick = (props, dispatch) => {
+    dispatch({ type: DELETE_ITEM, payload: props });
+    dispatch({ type: DECREASE_SUM_ORDER, payload: props });
 }
-ConstructorElement.propTypes =
-    { props: ingredientType, };
 
 export default BurgerConstructor;
