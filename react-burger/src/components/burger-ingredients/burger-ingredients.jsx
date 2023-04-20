@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import style from './burger-ingredients.module.css';
 import { INCREASE_PRODUCT_ITEM } from '../../services/actions/burger.js';
-import ingredientType from '../../utils/types.js'
+import { ingredientType } from '../../utils/types.js'
 import Modal from '../modal/modal'
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientDetails from '../ingredient-details/ingredient-details'
@@ -36,26 +36,26 @@ const BurgerDataMenu = () => {
             <Tab active={current === 'sauce'}> Соусы </Tab>
             <Tab active={current === 'main'} > Начинки </Tab>
          </div>
-            <div className={style.size + " custom-scroll"}>
-               <div ref={bunsRef} className="text text_type_main-medium"> Булки </div>
-               <div className={style.burger_custom_container + " pt-6"}>
-                  {burgerIngredients.bun.map((prop) => {
-                     return <MenuCreator key={prop._id} props={prop} />
-                  })}
-               </div>
-               <div ref={sauceRef} className="pt-2 pb-6 text text_type_main-medium"> Соусы </div>
-               <div className={style.burger_custom_container}>
-                  {burgerIngredients.souce.map((prop) => {
-                     return <MenuCreator key={prop._id} props={prop} />
-                  })}
-               </div>
-               <div ref={mainRef} className="pt-2 pb-6 text text_type_main-medium"> Начинки </div>
-               <div className={style.burger_custom_container}>
-                  {burgerIngredients.main.map((prop) => {
-                     return <MenuCreator key={prop._id} props={prop} />
-                  })}
-               </div>
+         <div className={style.size + " custom-scroll"}>
+            <div ref={bunsRef} className="text text_type_main-medium"> Булки </div>
+            <div className={style.burger_custom_container + " pt-6"}>
+               {burgerIngredients.bun.map((prop) => {
+                  return <MenuCreator key={prop._id} props={prop} />
+               })}
             </div>
+            <div ref={sauceRef} className="pt-2 pb-6 text text_type_main-medium"> Соусы </div>
+            <div className={style.burger_custom_container}>
+               {burgerIngredients.souce.map((prop) => {
+                  return <MenuCreator key={prop._id} props={prop} />
+               })}
+            </div>
+            <div ref={mainRef} className="pt-2 pb-6 text text_type_main-medium"> Начинки </div>
+            <div className={style.burger_custom_container}>
+               {burgerIngredients.main.map((prop) => {
+                  return <MenuCreator key={prop._id} props={prop} />
+               })}
+            </div>
+         </div>
       </div>
    );
 }
@@ -71,11 +71,11 @@ const MenuCreator = ({ props }) => {
 
    const burgerIngredients = useSelector(store => store.cartReducer.ingredientsNow);
    const [count, setIngredients] = React.useState(burgerIngredients);
-   
+
    React.useEffect(() => {
       setIngredients(burgerIngredients);
    })
-   
+
    const handleClose = () => {
       setIsOpen(false);
    }

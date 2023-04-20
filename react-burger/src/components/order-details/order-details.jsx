@@ -1,9 +1,9 @@
 import styles from './order-details.module.css';
 import { } from '@ya.praktikum/react-developer-burger-ui-components';
 import donePhoto from '../../images/done.png';
-import number from '../../utils/types.js';
+import { number } from '../../utils/types.js';
 
-const OrderDetails = ({responceData}) => {
+const OrderDetails = ({ responceData }) => {
     return (
         <div>
             <div className={styles.text_shadow + " text text_type_digits-large pt-20"}> {responceData.order.number} </div>
