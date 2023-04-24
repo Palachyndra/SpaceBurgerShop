@@ -4,8 +4,9 @@ import './index.css';
 import App from '../src/components/app/app';
 import reportWebVitals from './reportWebVitals';
 
-import { createStore, compose } from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import thunk from "redux-thunk";
 import { rootReducer } from './services/reducers/index.js';
 
 declare global {
@@ -16,7 +17,7 @@ declare global {
 const composeEnhancers = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] as typeof compose || compose;
  
 const enhancer = composeEnhancers();  
-const store = createStore(rootReducer, enhancer); 
+const store = createStore(rootReducer, applyMiddleware(thunk)); 
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

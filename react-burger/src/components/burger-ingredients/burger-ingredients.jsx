@@ -86,7 +86,7 @@ const MenuCreator = ({ props }) => {
          bun: [{
             _id: props._id,
             image_mobile: props.image_mobile,
-            name: props.name,
+            name: props.name + " (верх)",
             price: props.price,
             type: "top",
             isLocked: "true",
@@ -96,7 +96,7 @@ const MenuCreator = ({ props }) => {
          {
             _id: props._id,
             image_mobile: props.image_mobile,
-            name: props.name,
+            name: props.name + " (низ)",
             price: props.price,
             type: "bottom",
             isLocked: "true",

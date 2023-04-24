@@ -1,6 +1,7 @@
 import React from 'react';
 import style from './burger-constructor.module.css';
-import { ADD_ORDER_NUMBER, INCREASE_SUM_ORDER, CHANGE_BUNS_ITEM, INCREASE_ORDER, SWITCH_ING_ITEM, CHANGE_INGREDIENTS_ITEM, DELETE_ITEM, DECREASE_SUM_ORDER } from '../../services/actions/burger.js';
+import { INCREASE_SUM_ORDER, CHANGE_BUNS_ITEM, INCREASE_ORDER, SWITCH_ING_ITEM, CHANGE_INGREDIENTS_ITEM, DELETE_ITEM, DECREASE_SUM_ORDER } from '../../services/actions/burger.js';
+import { getOrder } from '../../services/actions/index.js';
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal'
 import OrderDetails from '../order-details/order-details'
@@ -34,29 +35,9 @@ const BurgerConstructor = () => {
             ingredients.push(dataOrders.ingredients[key]._id);
         });
 
-        const postData = async (url = '', data = {}) => {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                return response.json();
-            }
-            response.json().then((err) => Promise.reject(err));
-        }
-
         if (ingredients.length != 0)
-            postData(urlOrders, { ingredients })
-                .then((data) => {
-                    return dispatch({ type: ADD_ORDER_NUMBER, payload: data });
-                })
-                .catch((res) => {
-                    return Promise.reject(`Ошибка ${res.status}`);
-                });
+            dispatch(getOrder(urlOrders, { ingredients }));
+            
         if (orderNumber.success) {
             return setIsOpen(true);
         } else
