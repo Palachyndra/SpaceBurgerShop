@@ -12,22 +12,25 @@ import { useDrop, useDrag } from "react-dnd";
 const urlOrders = urlApi + 'orders';
 
 const BurgerConstructor = () => {
+    const dispatch = useDispatch();
     const dataOrders = useSelector(store => store.cartReducer.ingredientsNow);
     const sumState = useSelector(store => store.cartReducer.sumOrders);
+    const orderNumber = useSelector(store => store.cartReducer.orderNumber);
     const [isOpen, setIsOpen] = React.useState(false);
     const [cards, setCards] = React.useState(dataOrders.ingredients);
 
     React.useEffect(() => {
         setCards(dataOrders.ingredients)
+        if (orderNumber.success) {
+            return setIsOpen(true);
+        } else
+            return setIsOpen(false);
     })
 
-    const dispatch = useDispatch();
-    const orderNumber = useSelector(store => store.cartReducer.orderNumber);
-
     const handleClose = () => {
+        orderNumber.success = false;
         return setIsOpen(false);
     }
-
 
     const handleOpen = () => {
         let ingredients = [];
@@ -35,15 +38,8 @@ const BurgerConstructor = () => {
             ingredients.push(dataOrders.ingredients[key]._id);
         });
 
-        if (ingredients.length != 0)
-            dispatch(getOrder(urlOrders, { ingredients }));
-            
-        if (orderNumber.success) {
-            return setIsOpen(true);
-        } else
-            return setIsOpen(false);
+        dispatch(getOrder(urlOrders, { ingredients }));
     }
-
 
     const [{ canDrop }, dropIngredients] = useDrop({
         accept: "ingredients",
@@ -153,7 +149,7 @@ const BurgerConstructor = () => {
                     )}
                 </>
                 {isOpen && <Modal title={''} onClose={handleClose} >
-                    <OrderDetails responceData={orderNumber} />
+                    <OrderDetails />
                 </Modal>}
             </div>
         </div>

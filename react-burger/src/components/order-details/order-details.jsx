@@ -2,8 +2,10 @@ import styles from './order-details.module.css';
 import { } from '@ya.praktikum/react-developer-burger-ui-components';
 import donePhoto from '../../images/done.png';
 import { number } from '../../utils/types.js';
+import { useSelector } from 'react-redux';
 
-const OrderDetails = ({ responceData }) => {
+const OrderDetails = () => {
+    const responceData = useSelector(store => store.cartReducer.orderNumber);
     return (
         <div>
             <div className={styles.text_shadow + " text text_type_digits-large pt-20"}> {responceData.order.number} </div>
@@ -18,6 +20,5 @@ const OrderDetails = ({ responceData }) => {
 }
 OrderDetails.propTypes =
     { responceData: number, };
-
 
 export default OrderDetails;
