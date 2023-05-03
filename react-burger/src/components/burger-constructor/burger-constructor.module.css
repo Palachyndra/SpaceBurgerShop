@@ -23,8 +23,13 @@
     text-align: center;
     align-items: center;
     float: right;
+    min-width: 500px;
 }
 .size-icon {
     width: 33px !important;
     height: 33px !important;
+}
+
+.marging_left {
+    margin-left: 33%;
 }
