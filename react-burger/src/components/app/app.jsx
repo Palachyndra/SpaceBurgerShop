@@ -1,12 +1,9 @@
 import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ForgotPassword, HomePage, Login, Registration } from '../../pages';
 import AppHeader from '../app-header/app-header'
-import BurgerIngredients from '../burger-ingredients/burger-ingredients'
-import BurgerConstructor from '../burger-constructor/burger-constructor'
 import { getStore } from '../../services/actions/index.js';
-import main from './app.module.css'
 import { useSelector, useDispatch } from 'react-redux';
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,13 +17,15 @@ function App() {
     <>
       {dataBurgers.data && dataBurgers.success ? (
         <>
-          <AppHeader />
-          <main className={main.main}>
-            <DndProvider backend={HTML5Backend}>
-              <BurgerIngredients />
-              <BurgerConstructor />
-            </DndProvider>
-          </main>
+          <BrowserRouter>
+            <AppHeader />
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/registration" element={<Registration />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+              </Routes>
+          </BrowserRouter>
         </>
       ) : 'Loading...'}
     </>
