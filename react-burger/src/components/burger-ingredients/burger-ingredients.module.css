@@ -18,6 +18,10 @@
     flex-direction: row;
     align-items: center;
 }
+.burger_custom_container a {
+    color: white;
+    text-decoration: none;
+}
 .size {
     max-height: 824px;
     max-width: 600px;

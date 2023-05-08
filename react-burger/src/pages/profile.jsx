@@ -83,7 +83,7 @@ export function Profile() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({token: token}),
+      body: JSON.stringify({ token: token }),
     }).then((checkResponse))
       .then((res) => {
         if (res.success) {
@@ -98,11 +98,21 @@ export function Profile() {
       })
   }
 
+  const onClickProfile = () => {
+    setCurrent('profile')
+    navigate('/profile');
+  }
+
+  const onClickHistoryOrders = () => {
+    setCurrent('history')
+    navigate('/profile/orders');
+  }
+
   return (
     <div className={styles.container_row}>
       <div>
-        <div className={"text text_type_main-medium pb-6 " + (current !== 'profile' && 'text text_type_main-default text_color_inactive')} onClick={() => setCurrent('profile')}> Профиль </div>
-        <div className={"text text_type_main-medium pb-6 " + (current !== 'history' && 'text text_type_main-default text_color_inactive')} onClick={() => setCurrent('history')}> История заказов </div>
+        <div className={"text text_type_main-medium pb-6 " + (current !== 'profile' && 'text text_type_main-default text_color_inactive')} onClick={onClickProfile}> Профиль </div>
+        <div className={"text text_type_main-medium pb-6 " + (current !== 'history' && 'text text_type_main-default text_color_inactive')} onClick={onClickHistoryOrders}> История заказов </div>
         <div className={"text text_type_main-medium pb-6 " + (current !== 'exit' && 'text text_type_main-default text_color_inactive')} onClick={onClickExit}> Выход </div>
       </div>
       <div className={styles.container_box}>

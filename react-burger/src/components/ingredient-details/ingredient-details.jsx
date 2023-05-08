@@ -1,14 +1,25 @@
 import styles from './ingredient-details.module.css';
 import { ingredientType } from '../../utils/types.js'
 import { useSelector } from 'react-redux';
+import { useLocation } from "react-router-dom";
 import { } from '@ya.praktikum/react-developer-burger-ui-components';
 
 const IngredientDetails = () => {
-    const data = useSelector(store => store.cartReducer.productNow.data);
+    const location = useLocation();
+    const currentId = location.pathname.split('/ingredients/')[1];
+    const ingredients = useSelector(store => store.cartReducer.items.data);
+
+    const data = ingredients.bun.filter(item => item._id === currentId)[0] ?
+        ingredients.bun.filter(item => item._id === currentId)[0] :
+        ingredients.souce.filter(item => item._id === currentId)[0] ?
+            ingredients.souce.filter(item => item._id === currentId)[0] :
+            ingredients.main.filter(item => item._id === currentId)[0] ?
+                ingredients.main.filter(item => item._id === currentId)[0] :
+                "";
     return (
         <div>
             <div className={styles.photo}> <img src={data.image_large} alt={data.name} /> </div>
-            <div className={"text text_type_main-medium pt-4 pb-8"}> {data.name} </div>
+            <div className={"text text_type_main-medium pt-4 pb-8 " + styles.text}> {data.name} </div>
             <div className={styles.burgers_container + " pb-15"}>
                 <div className={styles.burgers_container_elements + " text text_type_main-default text_color_inactive"}>
                     <div> Калории,ккал </div>
