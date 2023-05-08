@@ -8,6 +8,7 @@ import OrderDetails from '../order-details/order-details'
 import { urlApi } from '../../utils/context.js'
 import { useSelector, useDispatch } from 'react-redux';
 import { useDrop, useDrag } from "react-dnd";
+import { useNavigate } from 'react-router-dom';
 
 const urlOrders = urlApi + 'orders';
 
@@ -18,9 +19,14 @@ const BurgerConstructor = () => {
     const orderNumber = useSelector(store => store.cartReducer.orderNumber);
     const [isOpen, setIsOpen] = React.useState(false);
     const [cards, setCards] = React.useState(dataOrders.ingredients);
+    const navigate = useNavigate();
+    const authorization = useSelector(store => store.authReducer.authorization);
+    const [auth, setAuth] = React.useState(authorization);
 
     React.useEffect(() => {
         setCards(dataOrders.ingredients)
+        setAuth(authorization);
+        
         if (orderNumber.success) {
             return setIsOpen(true);
         } else
@@ -33,12 +39,16 @@ const BurgerConstructor = () => {
     }
 
     const handleOpen = () => {
-        let ingredients = [];
-        Object.keys(dataOrders.ingredients).forEach(key => {
-            ingredients.push(dataOrders.ingredients[key]._id);
-        });
+        if (!auth)
+         navigate('/login')
+        else {
+            let ingredients = [];
+            Object.keys(dataOrders.ingredients).forEach(key => {
+                ingredients.push(dataOrders.ingredients[key]._id);
+            });
 
-        dispatch(getOrder(urlOrders, { ingredients }));
+            dispatch(getOrder(urlOrders, { ingredients }));
+        }
     }
 
     const [{ canDrop }, dropIngredients] = useDrop({

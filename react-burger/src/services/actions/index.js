@@ -1,5 +1,6 @@
 import { urlApi } from '../../utils/context.js'
 import { INSTALL_DATA, ADD_ORDER_NUMBER } from './burger.js'
+import { GET_AUTH } from './authorization.js';
 
 export const getStore = () => async (dispatch) => {
     const url = urlApi + "ingredients";
@@ -62,4 +63,35 @@ const checkResponse = (res) => {
         return res.json();
     } else
         return Promise.reject(`Ошибка ${res.status}`);
+}
+
+export const authorization = () => async (dispatch) => {
+    checkAuthorization()
+        .then((res) => {
+            if (res.success) {
+                dispatch({
+                    type: GET_AUTH,
+                    payload: res
+                });
+            }
+        })
+}
+
+const checkAuthorization = () => {
+    const url = urlApi + "auth/user";
+    const token = getCookie('accessToken');
+
+    return fetch(url, {
+        method: 'GET',
+        headers: {
+            "Authorization": token,
+        },
+    }).then((checkResponse));
+}
+
+function getCookie(name) {
+    let matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
 }

@@ -5,6 +5,14 @@
     margin-top: 5%;
 }
 
+.container_row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 5%;
+    justify-content: space-evenly;
+}
+
 .container_box {
     display: flex; 
     flex-direction: column;
@@ -13,4 +21,11 @@
 .text_color {
     cursor: pointer;
     color: #4C4CFF;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
 }
