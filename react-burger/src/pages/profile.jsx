@@ -4,9 +4,10 @@ import { EmailInput, Input, PasswordInput, Button } from '@ya.praktikum/react-de
 import { useSelector, useDispatch } from 'react-redux';
 import { urlApi } from '../utils/context.js';
 import { authorization } from '../services/actions/index'
-import { useNavigate, Navigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, redirect } from "react-router-dom";
 import { EXIT_AUTH } from '../services/actions/authorization.js';
-import { checkResponseExport } from '../services/actions/index.js';
+import { checkResponseExport, getCookieExport } from '../services/actions/index.js';
+
 
 
 
@@ -15,18 +16,13 @@ export function Profile() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const getCookie = (name) => {
-    let matches = document.cookie.match(new RegExp(
-      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-  }
 
   const authorizationData = useSelector(store => store.authReducer);
   const [auth, setAuth] = React.useState(authorizationData);
-  const token = getCookie('accessToken');
 
   React.useEffect(() => {
+    const token = getCookieExport('accessToken');
+    if (!token) redirect('/login')
     setAuth(authorizationData);
   })
 
@@ -56,7 +52,7 @@ export function Profile() {
 
   const updateAccount = () => {
     const url = urlApi + "auth/user";
-    const token = getCookie('accessToken');
+    const token = getCookieExport('accessToken');
     return fetch(url, {
       method: 'PATCH',
       headers: {
@@ -74,7 +70,7 @@ export function Profile() {
 
   const onClickExit = () => {
     const url = urlApi + "auth/logout";
-    const token = getCookie('refreshToken');
+    const token = getCookieExport('refreshToken');
     setCurrent('exit');
 
     return fetch(url, {
@@ -109,48 +105,46 @@ export function Profile() {
 
   return (
     <>
-    {token ? (
-    <div className={styles.container_row}>
-      <div>
-        <div className={"text text_type_main-medium pb-6 " + (current !== 'profile' && 'text text_type_main-default text_color_inactive')} onClick={onClickProfile}> Профиль </div>
-        <div className={"text text_type_main-medium pb-6 " + (current !== 'history' && 'text text_type_main-default text_color_inactive')} onClick={onClickHistoryOrders}> История заказов </div>
-        <div className={"text text_type_main-medium pb-6 " + (current !== 'exit' && 'text text_type_main-default text_color_inactive')} onClick={onClickExit}> Выход </div>
-      </div>
-      <div className={styles.container_box}>
-        <form>
-          <Input className='text input__textfield text_type_main-default input__textfield-disabled'
-            onChange={e => setNameValue(e.target.value)}
-            value={nameValue ? nameValue : auth.authorizationName}
-            placeholder={'Имя'}
-            type={'text'}
-            icon={'EditIcon'}
-            extraClass="pb-6"
-          />
-          <EmailInput
-            onChange={e => setEmailValue(e.target.value)}
-            value={emailValue ? emailValue : auth.authorizationEmail}
-            placeholder='Логин'
-            isIcon={true}
-            extraClass="pb-6"
-          />
-          <PasswordInput
-            onChange={e => setPasswordValue(e.target.value)}
-            value={passwordValue ? passwordValue : ''}
-            placeholder={'Пароль'}
-            name={'text'}
-            icon={'EditIcon'}
-            extraClass="pb-6"
-          />
-        </form>
-        <div className={styles.row}>
-          <div className={styles.text_color + ' pr-6'} onClick={cancelClick}> Отменить </div>
-          <Button htmlType="button" type="primary" size="medium" onClick={onClickUpdate}>
-            Сохранить
-          </Button>
+      <div className={styles.container_row}>
+        <div>
+          <div className={"text text_type_main-medium pb-6 " + (current !== 'profile' && 'text text_type_main-default text_color_inactive')} onClick={onClickProfile}> Профиль </div>
+          <div className={"text text_type_main-medium pb-6 " + (current !== 'history' && 'text text_type_main-default text_color_inactive')} onClick={onClickHistoryOrders}> История заказов </div>
+          <div className={"text text_type_main-medium pb-6 " + (current !== 'exit' && 'text text_type_main-default text_color_inactive')} onClick={onClickExit}> Выход </div>
+        </div>
+        <div className={styles.container_box}>
+          <form>
+            <Input className='text input__textfield text_type_main-default input__textfield-disabled'
+              onChange={e => setNameValue(e.target.value)}
+              value={nameValue ? nameValue : auth.authorizationName}
+              placeholder={'Имя'}
+              type={'text'}
+              icon={'EditIcon'}
+              extraClass="pb-6"
+            />
+            <EmailInput
+              onChange={e => setEmailValue(e.target.value)}
+              value={emailValue ? emailValue : auth.authorizationEmail}
+              placeholder='Логин'
+              isIcon={true}
+              extraClass="pb-6"
+            />
+            <PasswordInput
+              onChange={e => setPasswordValue(e.target.value)}
+              value={passwordValue ? passwordValue : ''}
+              placeholder={'Пароль'}
+              name={'text'}
+              icon={'EditIcon'}
+              extraClass="pb-6"
+            />
+          </form>
+          <div className={styles.row}>
+            <div className={styles.text_color + ' pr-6'} onClick={cancelClick}> Отменить </div>
+            <Button htmlType="button" type="primary" size="medium" onClick={onClickUpdate}>
+              Сохранить
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
-    ) : <Navigate to={location?.state?.from || '/login'} /> }
     </>
   );
 }

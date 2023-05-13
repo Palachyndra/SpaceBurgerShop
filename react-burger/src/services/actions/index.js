@@ -74,8 +74,8 @@ const refToken = async (dispatch) => {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ token: token }),
-        })
+        body: JSON.stringify({ token }),
+        }) 
 }
 
 export const authorization = () => async (dispatch) => {
@@ -88,14 +88,25 @@ export const authorization = () => async (dispatch) => {
                 });
             }
              else {
-                refToken().then((res) => {
-                    if(res.success) {
-                        dispatch({
-                            type: GET_TOKEN,
-                            payload: res
-                        });
+                 refToken().then(async (res) => {
+                    if(res.ok) {
+                        const date = new Date(Date.now() + 1200e3)
+                        const value = await res.json();
+                        document.cookie = `accessToken=${value.accessToken}; expires=${date}`
+                        document.cookie = `refreshToken=${value.refreshToken}`
+                        checkAuthorization()
+                            .then(async (res) => {
+                                const value = await res.json();
+                                if (value.success) {
+                                    dispatch({
+                                        type: GET_AUTH,
+                                        payload: value
+                                    });
+                                }
+                            })
                     }
                 });
+                
             }
         })
 }

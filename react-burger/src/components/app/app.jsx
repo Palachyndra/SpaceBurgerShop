@@ -16,6 +16,7 @@ function App() {
   React.useEffect(() => {
     const token = getCookieExport('accessToken');
     dispatch(getStore());
+    console.log(1)
     if (token)
       dispatch(authorization());
   }, [])
