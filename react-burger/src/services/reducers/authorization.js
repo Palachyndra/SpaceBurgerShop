@@ -15,9 +15,8 @@ export const authReducer = (state = authorizationData, action) => {
         case GET_TOKEN: {
             return {
                 ...state,
-                accessToken: action.payload.res.accessToken,
-                refreshToken: action.payload.res.refreshToken,
-                authorizationPassword: action.payload.passwordValue,
+                accessToken: action.payload.accessToken,
+                refreshToken: action.payload.refreshToken,
             };
         }
         case GET_AUTH: {
@@ -25,6 +24,7 @@ export const authReducer = (state = authorizationData, action) => {
                 ...state,
                 authorizationName: action.payload.user.name,
                 authorizationEmail: action.payload.user.email,
+                authorizationPassword: action.payload.passwordValue,
                 authorization: true,
             };
         }

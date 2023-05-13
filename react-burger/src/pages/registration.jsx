@@ -3,6 +3,8 @@ import styles from './login.module.css'
 import { useNavigate } from "react-router-dom";
 import { EmailInput, PasswordInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { urlApi } from '../utils/context.js'
+import { checkResponseExport } from '../services/actions/index.js';
+
 
 export function Registration() {
   const [nameValue, setNameValue] = React.useState('')
@@ -33,41 +35,36 @@ export function Registration() {
         password: passwordValue,
         name: nameValue
       })
-    }).then((checkResponse));
-  }
-
-  const checkResponse = (res) => {
-    if (res.ok) {
-      return res.json();
-    } else
-      return Promise.reject(`Ошибка ${res.status}`);
+    }).then((checkResponseExport));
   }
 
   return (
     <div className={styles.container}>
       <div className="text text_type_main-medium pb-6"> Регистрация </div>
       <div className={styles.container_box}>
-        <Input
-          type={'text'}
-          placeholder={'Имя'}
-          onChange={e => setNameValue(e.target.value)}
-          value={nameValue}
-          size={'default'}
-          extraClass="pb-6"
-        />
-        <EmailInput
-          onChange={e => setEmailValue(e.target.value)}
-          value={emailValue}
-          placeholder='Укажите e-mail'
-          isIcon={false}
-          extraClass="pb-6"
-        />
-        <PasswordInput
-          onChange={e => setPasswordValue(e.target.value)}
-          value={passwordValue}
-          name={'password'}
-          extraClass="pb-6"
-        />
+        <form>
+          <Input
+            type={'text'}
+            placeholder={'Имя'}
+            onChange={e => setNameValue(e.target.value)}
+            value={nameValue}
+            size={'default'}
+            extraClass="pb-6"
+          />
+          <EmailInput
+            onChange={e => setEmailValue(e.target.value)}
+            value={emailValue}
+            placeholder='Укажите e-mail'
+            isIcon={false}
+            extraClass="pb-6"
+          />
+          <PasswordInput
+            onChange={e => setPasswordValue(e.target.value)}
+            value={passwordValue}
+            name={'password'}
+            extraClass="pb-6"
+          />
+        </form>
       </div>
       <div className="pb-20">
         <Button htmlType="button" type="primary" size="medium" onClick={onClickCreate}>

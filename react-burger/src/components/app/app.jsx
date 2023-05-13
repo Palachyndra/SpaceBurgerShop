@@ -4,7 +4,7 @@ import { Profile, ResetPassword, ForgotPassword, HomePage, Login, Registration, 
 import IngredientDetails from '../ingredient-details/ingredient-details'
 import Modal from '../modal/modal'
 import AppHeader from '../app-header/app-header'
-import { getStore, authorization } from '../../services/actions/index.js';
+import { getStore, authorization, getCookieExport } from '../../services/actions/index.js';
 import { useSelector, useDispatch } from 'react-redux';
 
 function App() {
@@ -14,8 +14,10 @@ function App() {
   const background = location.state && location.state.background;
 
   React.useEffect(() => {
+    const token = getCookieExport('accessToken');
     dispatch(getStore());
-    dispatch(authorization());
+    if (token)
+      dispatch(authorization());
   }, [])
 
   const closeModal = () => {

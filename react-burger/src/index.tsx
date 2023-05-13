@@ -8,7 +8,7 @@ import { createStore, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from "redux-thunk";
 import { rootReducer } from './services/reducers/index.js';
-import { BrowserRouter} from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 
 
 declare global {
@@ -17,9 +17,9 @@ declare global {
   }
 }
 const composeEnhancers = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] as typeof compose || compose;
- 
-const enhancer = composeEnhancers();  
-const store = createStore(rootReducer, applyMiddleware(thunk)); 
+
+const enhancer = composeEnhancers();
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

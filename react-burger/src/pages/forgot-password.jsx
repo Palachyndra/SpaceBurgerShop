@@ -42,13 +42,15 @@ export function ForgotPassword() {
     <div className={styles.container}>
       <div className="text text_type_main-medium pb-6"> Восстановление пароля </div>
       <div className={styles.container_box}>
-        <EmailInput
-          onChange={e => setValue(e.target.value)}
-          value={value}
-          placeholder='Укажите e-mail'
-          isIcon={false}
-          extraClass="pb-6"
-        />
+        <form>
+          <EmailInput
+            onChange={e => setValue(e.target.value)}
+            value={value}
+            placeholder='Укажите e-mail'
+            isIcon={false}
+            extraClass="pb-6"
+          />
+        </form>
       </div>
       <div className="pb-20">
         <Button htmlType="button" type="primary" size="medium" onClick={onClickReset}>

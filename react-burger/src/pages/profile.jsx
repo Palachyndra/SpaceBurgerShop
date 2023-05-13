@@ -4,19 +4,32 @@ import { EmailInput, Input, PasswordInput, Button } from '@ya.praktikum/react-de
 import { useSelector, useDispatch } from 'react-redux';
 import { urlApi } from '../utils/context.js';
 import { authorization } from '../services/actions/index'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate, useLocation } from "react-router-dom";
 import { EXIT_AUTH } from '../services/actions/authorization.js';
+import { checkResponseExport } from '../services/actions/index.js';
+
 
 
 export function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const getCookie = (name) => {
+    let matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+  }
+
   const authorizationData = useSelector(store => store.authReducer);
   const [auth, setAuth] = React.useState(authorizationData);
+  const token = getCookie('accessToken');
 
   React.useEffect(() => {
     setAuth(authorizationData);
   })
+
   const oldName = auth.authorizationName;
   const oldEmail = auth.authorizationEmail;
   const oldPassword = auth.authorizationPassword;
@@ -37,8 +50,6 @@ export function Profile() {
       .then((res) => {
         if (res.success) {
           dispatch(authorization());
-          setNameValue(res.user.name)
-          setEmailValue(res.user.email)
         }
       })
   }
@@ -53,25 +64,13 @@ export function Profile() {
         "Authorization": token,
       },
       body: JSON.stringify({
-        name: nameValue,
-        email: emailValue,
+        name: nameValue ? nameValue : auth.authorizationName,
+        email: emailValue ? emailValue : auth.authorizationEmail,
+        password: passwordValue,
       }),
-    }).then((checkResponse));
+    }).then((checkResponseExport));
   }
 
-  const checkResponse = (res) => {
-    if (res.ok) {
-      return res.json();
-    } else
-      return Promise.reject(`Ошибка ${res.status}`);
-  }
-
-  const getCookie = (name) => {
-    let matches = document.cookie.match(new RegExp(
-      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-  }
 
   const onClickExit = () => {
     const url = urlApi + "auth/logout";
@@ -84,7 +83,7 @@ export function Profile() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ token: token }),
-    }).then((checkResponse))
+    }).then((checkResponseExport))
       .then((res) => {
         if (res.success) {
           document.cookie = "refreshToken=''; max-age=-1";
@@ -109,6 +108,8 @@ export function Profile() {
   }
 
   return (
+    <>
+    {token ? (
     <div className={styles.container_row}>
       <div>
         <div className={"text text_type_main-medium pb-6 " + (current !== 'profile' && 'text text_type_main-default text_color_inactive')} onClick={onClickProfile}> Профиль </div>
@@ -116,29 +117,31 @@ export function Profile() {
         <div className={"text text_type_main-medium pb-6 " + (current !== 'exit' && 'text text_type_main-default text_color_inactive')} onClick={onClickExit}> Выход </div>
       </div>
       <div className={styles.container_box}>
-        <Input className='text input__textfield text_type_main-default input__textfield-disabled'
-          onChange={e => setNameValue(e.target.value)}
-          value={nameValue}
-          placeholder={'Имя'}
-          type={'text'}
-          icon={'EditIcon'}
-          extraClass="pb-6"
-        />
-        <EmailInput
-          onChange={e => setEmailValue(e.target.value)}
-          value={emailValue}
-          placeholder='Логин'
-          isIcon={true}
-          extraClass="pb-6"
-        />
-        <PasswordInput
-          onChange={e => setPasswordValue(e.target.value)}
-          value={passwordValue}
-          placeholder={'Пароль'}
-          name={'text'}
-          icon={'EditIcon'}
-          extraClass="pb-6"
-        />
+        <form>
+          <Input className='text input__textfield text_type_main-default input__textfield-disabled'
+            onChange={e => setNameValue(e.target.value)}
+            value={nameValue ? nameValue : auth.authorizationName}
+            placeholder={'Имя'}
+            type={'text'}
+            icon={'EditIcon'}
+            extraClass="pb-6"
+          />
+          <EmailInput
+            onChange={e => setEmailValue(e.target.value)}
+            value={emailValue ? emailValue : auth.authorizationEmail}
+            placeholder='Логин'
+            isIcon={true}
+            extraClass="pb-6"
+          />
+          <PasswordInput
+            onChange={e => setPasswordValue(e.target.value)}
+            value={passwordValue ? passwordValue : ''}
+            placeholder={'Пароль'}
+            name={'text'}
+            icon={'EditIcon'}
+            extraClass="pb-6"
+          />
+        </form>
         <div className={styles.row}>
           <div className={styles.text_color + ' pr-6'} onClick={cancelClick}> Отменить </div>
           <Button htmlType="button" type="primary" size="medium" onClick={onClickUpdate}>
@@ -147,5 +150,7 @@ export function Profile() {
         </div>
       </div>
     </div>
+    ) : <Navigate to={location?.state?.from || '/login'} /> }
+    </>
   );
 }

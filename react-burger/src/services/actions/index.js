@@ -1,6 +1,6 @@
 import { urlApi } from '../../utils/context.js'
 import { INSTALL_DATA, ADD_ORDER_NUMBER } from './burger.js'
-import { GET_AUTH } from './authorization.js';
+import { GET_AUTH, GET_TOKEN } from './authorization.js';
 
 export const getStore = () => async (dispatch) => {
     const url = urlApi + "ingredients";
@@ -65,6 +65,19 @@ const checkResponse = (res) => {
         return Promise.reject(`Ошибка ${res.status}`);
 }
 
+const refToken = async (dispatch) => {
+    const url = urlApi + "auth/token";
+    const token = getCookie('refreshToken');
+
+    return fetch(url, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: token }),
+        })
+}
+
 export const authorization = () => async (dispatch) => {
     checkAuthorization()
         .then((res) => {
@@ -72,6 +85,16 @@ export const authorization = () => async (dispatch) => {
                 dispatch({
                     type: GET_AUTH,
                     payload: res
+                });
+            }
+             else {
+                refToken().then((res) => {
+                    if(res.success) {
+                        dispatch({
+                            type: GET_TOKEN,
+                            payload: res
+                        });
+                    }
                 });
             }
         })
@@ -86,7 +109,7 @@ const checkAuthorization = () => {
         headers: {
             "Authorization": token,
         },
-    }).then((checkResponse));
+    });
 }
 
 function getCookie(name) {
@@ -95,3 +118,17 @@ function getCookie(name) {
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
+
+export function getCookieExport(name) {
+    let matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+export const checkResponseExport = (res) => {
+    if (res.ok) {
+      return res.json();
+    } else
+      return Promise.reject(`Ошибка ${res.status}`);
+  }

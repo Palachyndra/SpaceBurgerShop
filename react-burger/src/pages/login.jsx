@@ -5,6 +5,7 @@ import { PasswordInput, Input, Button } from '@ya.praktikum/react-developer-burg
 import { urlApi } from '../utils/context.js'
 import { GET_TOKEN, GET_AUTH } from '../services/actions/authorization.js';
 import { useDispatch } from 'react-redux';
+import { checkResponseExport } from '../services/actions/index.js';
 
 
 export function Login() {
@@ -22,11 +23,11 @@ export function Login() {
     }
 
     function onClickAuthorization() {
-        Authorization()
+        loginAuthorization()
             .then((res) => {
                 dispatch({
                     type: GET_TOKEN,
-                    payload: {res, passwordValue}
+                    payload: res
                 });
                 dispatch({
                     type: GET_AUTH,
@@ -35,13 +36,13 @@ export function Login() {
                 if (res.success) {
                     let date = new Date(Date.now() + 1200e3)
                     document.cookie = `accessToken=${res.accessToken}; expires=${date}`
-                    document.cookie = `refreshToken=${res.refreshToken}; expires=${date}`
+                    document.cookie = `refreshToken=${res.refreshToken}`
                     navigate('/')
                 };
             })
     }
 
-    const Authorization = () => {
+    const loginAuthorization = () => {
         const url = urlApi + "auth/login";
         return fetch(url, {
             method: 'POST',
@@ -52,34 +53,29 @@ export function Login() {
                 email: emailValue,
                 password: passwordValue,
             })
-        }).then((checkResponse));
-    }
-
-    const checkResponse = (res) => {
-        if (res.ok) {
-            return res.json();
-        } else
-            return Promise.reject(`Ошибка ${res.status}`);
+        }).then((checkResponseExport));
     }
 
     return (
         <div className={styles.container}>
             <div className="text text_type_main-medium pb-6"> Вход </div>
             <div className={styles.container_box}>
-                <Input
-                    type={'text'}
-                    placeholder={'E-mail'}
-                    onChange={e => setEmailValue(e.target.value)}
-                    value={emailValue}
-                    size={'default'}
-                    extraClass="pb-6"
-                />
-                <PasswordInput
-                    onChange={e => setPasswordValue(e.target.value)}
-                    value={passwordValue}
-                    name={'password'}
-                    extraClass="pb-6"
-                />
+                <form>
+                    <Input
+                        type={'text'}
+                        placeholder={'E-mail'}
+                        onChange={e => setEmailValue(e.target.value)}
+                        value={emailValue}
+                        size={'default'}
+                        extraClass="pb-6"
+                    />
+                    <PasswordInput
+                        onChange={e => setPasswordValue(e.target.value)}
+                        value={passwordValue}
+                        name={'password'}
+                        extraClass="pb-6"
+                    />
+                </form>
             </div>
             <div className="pb-20">
                 <Button htmlType="button" type="primary" size="medium" onClick={onClickAuthorization}>
