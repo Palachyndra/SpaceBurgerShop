@@ -84,7 +84,6 @@ export const authorization = () => async (dispatch) => {
             if (res.success) {
                 dispatch({
                     type: GET_AUTH,
-                    payload: res
                 });
             }
              else {

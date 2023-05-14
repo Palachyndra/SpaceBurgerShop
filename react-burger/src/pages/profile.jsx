@@ -4,8 +4,8 @@ import { EmailInput, Input, PasswordInput, Button } from '@ya.praktikum/react-de
 import { useSelector, useDispatch } from 'react-redux';
 import { urlApi } from '../utils/context.js';
 import { authorization } from '../services/actions/index'
-import { useNavigate, useLocation, Navigate } from "react-router-dom";
-import { AUTH_TRUE, EXIT_AUTH } from '../services/actions/authorization.js';
+import { useNavigate, useLocation, redirect } from "react-router-dom";
+import { EXIT_AUTH } from '../services/actions/authorization.js';
 import { checkResponseExport, getCookieExport } from '../services/actions/index.js';
 
 
@@ -19,16 +19,10 @@ export function Profile() {
 
   const authorizationData = useSelector(store => store.authReducer);
   const [auth, setAuth] = React.useState(authorizationData);
-  const token = getCookieExport('accessToken');
-
 
   React.useEffect(() => {
-    if (token && !auth.authorization) { 
-      dispatch({
-        type: AUTH_TRUE,
-        payload: true
-      });
-    }
+    const token = getCookieExport('accessToken');
+    if (!token) redirect('/login')
     setAuth(authorizationData);
   })
 
@@ -111,7 +105,6 @@ export function Profile() {
 
   return (
     <>
-    {auth.authorization ? (
       <div className={styles.container_row}>
         <div>
           <div className={"text text_type_main-medium pb-6 " + (current !== 'profile' && 'text text_type_main-default text_color_inactive')} onClick={onClickProfile}> Профиль </div>
@@ -152,7 +145,6 @@ export function Profile() {
           </div>
         </div>
       </div>
-      ) : <Navigate to={location?.state?.from || '/login'} />}
     </>
   );
 }
