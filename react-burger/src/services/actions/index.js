@@ -1,6 +1,7 @@
 import { urlApi } from '../../utils/context.js'
 import { INSTALL_DATA, ADD_ORDER_NUMBER } from './burger.js'
 import { GET_AUTH, GET_TOKEN } from './authorization.js';
+import { request } from '../../utils/request.js';
 
 export const getStore = () => async (dispatch) => {
     const url = urlApi + "ingredients";
@@ -65,61 +66,21 @@ const checkResponse = (res) => {
         return Promise.reject(`Ошибка ${res.status}`);
 }
 
-const refToken = async (dispatch) => {
-    const url = urlApi + "auth/token";
-    const token = getCookie('refreshToken');
-
-    return fetch(url, {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token }),
-        }) 
-}
 
 export const authorization = () => async (dispatch) => {
-    checkAuthorization()
-        .then((res) => {
-            if (res.success) {
-                dispatch({
-                    type: GET_AUTH,
-                });
-            }
-             else {
-                 refToken().then(async (res) => {
-                    if(res.ok) {
-                        const date = new Date(Date.now() + 1200e3)
-                        const value = await res.json();
-                        document.cookie = `accessToken=${value.accessToken}; expires=${date}`
-                        document.cookie = `refreshToken=${value.refreshToken}`
-                        checkAuthorization()
-                            .then(async (res) => {
-                                const value = await res.json();
-                                if (value.success) {
-                                    dispatch({
-                                        type: GET_AUTH,
-                                        payload: value
-                                    });
-                                }
-                            })
-                    }
-                });
-                
-            }
-        })
-}
-
-const checkAuthorization = () => {
-    const url = urlApi + "auth/user";
     const token = getCookie('accessToken');
-
-    return fetch(url, {
-        method: 'GET',
-        headers: {
-            "Authorization": token,
-        },
-    });
+    const data = await request("auth/user", {
+        method: 'GET'
+    })
+    if (data.success) {
+        dispatch({
+            type: GET_AUTH,
+            payload: data
+        });
+    } else {
+        document.cookie = "refreshToken=''; max-age=-1";
+        document.cookie = "accessToken=''; max-age=-1";
+    }
 }
 
 function getCookie(name) {

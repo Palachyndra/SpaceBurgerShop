@@ -34,8 +34,8 @@ function AppHeader() {
          <Logo />
          <div className={style.container}>
             <div className={style.mini_container + " pl-5 pr-2 pb-4 pt-4"}>
-               <ProfileIcon type={location.pathname !== '/profile' ? "secondary" : "primary"} />
-               <div className={'pl-2 text text_type_main-default ' + (location.pathname !== '/profile' && 'text_color_inactive')} onClick={onClick}>  Личный кабинет  </div>
+               <ProfileIcon type={!location.pathname.includes('/profile') ? "secondary" : "primary"} />
+               <div className={'pl-2 text text_type_main-default ' + (!location.pathname.includes('/profile') && 'text_color_inactive')} onClick={onClick}>  Личный кабинет  </div>
             </div>
          </div>
       </header>
