@@ -1,4 +1,4 @@
-import { GET_TOKEN, GET_AUTH, EXIT_AUTH, AUTH_TRUE } from '../actions/authorization';
+import { GET_TOKEN, GET_AUTH, EXIT_AUTH } from '../actions/authorization';
 import { authorization, authorizationName, authorizationEmail, authorizationPassword, refreshToken, accessToken } from '../initialData';
 
 const authorizationData = {
@@ -32,12 +32,6 @@ export const authReducer = (state = authorizationData, action) => {
             return {
                 ...state,
                 authorization: false,
-            };
-        }
-        case AUTH_TRUE: {
-            return {
-                ...state,
-                authorization: true,
             };
         }
         default: {
