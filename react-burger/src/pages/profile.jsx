@@ -108,7 +108,7 @@ export function Profile() {
     setCurrent('history')
     navigate('/profile/orders');
   }
-  console.log(auth.authorization)
+
   return (
     <>
     {auth.authorization ? (
