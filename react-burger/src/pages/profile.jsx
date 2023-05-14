@@ -3,9 +3,8 @@ import styles from './login.module.css'
 import { EmailInput, Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { urlApi } from '../utils/context.js';
-import { authorization } from '../services/actions/index'
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
-import { AUTH_TRUE, EXIT_AUTH } from '../services/actions/authorization.js';
+import { EXIT_AUTH } from '../services/actions/authorization.js';
 import { checkResponseExport, getCookieExport } from '../services/actions/index.js';
 
 
