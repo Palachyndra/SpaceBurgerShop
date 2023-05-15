@@ -68,7 +68,6 @@ const checkResponse = (res) => {
 
 
 export const authorization = () => async (dispatch) => {
-    const token = getCookie('accessToken');
     const data = await request("auth/user", {
         method: 'GET'
     })
