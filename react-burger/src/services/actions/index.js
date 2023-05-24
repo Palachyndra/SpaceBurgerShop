@@ -1,5 +1,7 @@
 import { urlApi } from '../../utils/context.js'
 import { INSTALL_DATA, ADD_ORDER_NUMBER } from './burger.js'
+import { GET_AUTH, GET_TOKEN } from './authorization.js';
+import { request } from '../../utils/request.js';
 
 export const getStore = () => async (dispatch) => {
     const url = urlApi + "ingredients";
@@ -63,3 +65,40 @@ const checkResponse = (res) => {
     } else
         return Promise.reject(`Ошибка ${res.status}`);
 }
+
+
+export const authorization = () => async (dispatch) => {
+    const data = await request("auth/user", {
+        method: 'GET'
+    })
+    if (data.success) {
+        dispatch({
+            type: GET_AUTH,
+            payload: data
+        });
+    } else {
+        document.cookie = "refreshToken=''; max-age=-1";
+        document.cookie = "accessToken=''; max-age=-1";
+    }
+}
+
+function getCookie(name) {
+    let matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+export function getCookieExport(name) {
+    let matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+export const checkResponseExport = (res) => {
+    if (res.ok) {
+      return res.json();
+    } else
+      return Promise.reject(`Ошибка ${res.status}`);
+  }

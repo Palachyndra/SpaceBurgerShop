@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import style from './burger-ingredients.module.css';
 import { INCREASE_PRODUCT_ITEM } from '../../services/actions/burger.js';
 import { ingredientType } from '../../utils/types.js'
-import Modal from '../modal/modal'
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
-import IngredientDetails from '../ingredient-details/ingredient-details'
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from "react-dnd";
 import { useInView } from "react-intersection-observer";
-
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const BurgerDataMenu = () => {
    const [current, setCurrent] = React.useState('bun');
@@ -61,11 +59,9 @@ const BurgerDataMenu = () => {
 }
 
 const MenuCreator = ({ props }) => {
-   const [isOpen, setIsOpen] = React.useState(false);
-
+   const location = useLocation();
    const dispatch = useDispatch();
    const handleOpen = () => {
-      setIsOpen(true);
       dispatch({ type: INCREASE_PRODUCT_ITEM, payload: props });
    }
 
@@ -75,10 +71,6 @@ const MenuCreator = ({ props }) => {
    React.useEffect(() => {
       setIngredients(burgerIngredients);
    })
-
-   const handleClose = () => {
-      setIsOpen(false);
-   }
 
    const [, dragRef] = useDrag((e) => e = {
       type: "buns",
@@ -119,20 +111,19 @@ const MenuCreator = ({ props }) => {
    })
 
    return (
-      <div ref={props.type === "bun" ? dragRef : dragRef2} className={style.burger_custom_container_ingredients + " pl-4 pr-6 pb-8"} >
-         <div className={style.up_counter}>
-            {props.count ? <Counter count={props.count} size="default" /> : ''}
+      <Link to={`/ingredients/${props._id}`} state={{ background: location }}>
+         <div ref={props.type === "bun" ? dragRef : dragRef2} className={style.burger_custom_container_ingredients + " pl-4 pr-6 pb-8"} >
+            <div className={style.up_counter}>
+               {props.count ? <Counter count={props.count} size="default" /> : ''}
+            </div>
+            <img className="pl-4" src={props.image} alt={props.name} onClick={handleOpen} />
+            <div className={style.burger_custom_container_ingredients_text}>
+               <div className="text text_type_digits-default pr-2 pt-1 pb-1"> {props.price} </div>
+               <CurrencyIcon type="primary" />
+            </div>
+            <div className="text text_type_main-default"> {props.name} </div>
          </div>
-         <img className="pl-4" src={props.image} alt={props.name} onClick={handleOpen} />
-         <div className={style.burger_custom_container_ingredients_text}>
-            <div className="text text_type_digits-default pr-2 pt-1 pb-1"> {props.price} </div>
-            <CurrencyIcon type="primary" />
-         </div>
-         <div className="text text_type_main-default"> {props.name} </div>
-         {isOpen && <Modal title={'Детали ингредиента'} onClose={handleClose} >
-            <IngredientDetails />
-         </Modal>}
-      </div>
+      </Link>
    );
 }
 
