@@ -1,44 +1,44 @@
-import React from 'react';
+import React, { FC, Dispatch } from 'react';
 import styles from './login.module.css'
 import { EmailInput, Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { urlApi } from '../utils/context.js';
+import { urlApi } from '../utils/context';
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { EXIT_AUTH } from '../services/actions/authorization.js';
-import { checkResponseExport, getCookieExport } from '../services/actions/index.js';
+import { checkResponseExport, getCookieExport } from '../services/actions/index';
+import { TStoreProfile } from '../types/generalTypes';
 
-
-
-
-export function Profile() {
-  const dispatch = useDispatch();
+export const Profile: FC = () => {
+  const dispatch: Dispatch<any> = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
-
+  // @ts-ignore
   const authorizationData = useSelector(store => store.authReducer);
-  const [auth, setAuth] = React.useState(authorizationData);
-  const token = getCookieExport('accessToken');
+  
+  const [auth, setAuth] = React.useState<TStoreProfile>(authorizationData);
+  const token: string | undefined = getCookieExport('accessToken');
 
   const checkAuth = () => {
     if (token)
       return true;
+    else 
+      return false;
   }
   
-  const authorization = checkAuth()
+  const authorization: boolean = checkAuth()
   
   React.useEffect(() => {
     setAuth(authorizationData);
   })
 
-  const oldName = auth.authorizationName;
-  const oldEmail = auth.authorizationEmail;
-  const oldPassword = auth.authorizationPassword;
+  const oldName:string = auth.authorizationName;
+  const oldEmail:string = auth.authorizationEmail;
+  const oldPassword:string | undefined = auth.authorizationPassword;
 
-  const [nameValue, setNameValue] = React.useState(auth.authorizationName);
-  const [emailValue, setEmailValue] = React.useState(auth.authorizationEmail);
-  const [passwordValue, setPasswordValue] = React.useState(auth.authorizationPassword);
-  const [current, setCurrent] = React.useState('profile');
+  const [nameValue, setNameValue] = React.useState<string>(auth.authorizationName);
+  const [emailValue, setEmailValue] = React.useState<string>(auth.authorizationEmail);
+  const [passwordValue, setPasswordValue] = React.useState<string | undefined>(auth.authorizationPassword);
+  const [current, setCurrent] = React.useState<string>('profile');
 
   const cancelClick = () => {
     setNameValue(oldName)
@@ -50,14 +50,14 @@ export function Profile() {
     updateAccount()
       .then((res) => {
         if (res.success) {
-          dispatch(authorization());
+          dispatch(checkAuth());
         }
       })
   }
 
   const updateAccount = () => {
-    const url = urlApi + "auth/user";
-    const token = getCookieExport('accessToken');
+    const url: string = urlApi + "auth/user";
+    const token: any = getCookieExport('accessToken');
     return fetch(url, {
       method: 'PATCH',
       headers: {
@@ -72,10 +72,9 @@ export function Profile() {
     }).then((checkResponseExport));
   }
 
-
   const onClickExit = () => {
-    const url = urlApi + "auth/logout";
-    const token = getCookieExport('refreshToken');
+    const url: string = urlApi + "auth/logout";
+    const token: any = getCookieExport('refreshToken');
     setCurrent('exit');
 
     return fetch(url, {

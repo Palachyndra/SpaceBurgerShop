@@ -7,8 +7,9 @@ import style from './app-header.module.css';
 function AppHeader() {
    const location = useLocation();
    const navigate = useNavigate();
+   // @ts-ignore
    const authorization = useSelector(store => store.authReducer.authorization);
-   const [auth, setAuth] = React.useState(authorization);
+   const [auth, setAuth] = React.useState<boolean>(authorization);
 
    React.useEffect(() => {
        setAuth(authorization);

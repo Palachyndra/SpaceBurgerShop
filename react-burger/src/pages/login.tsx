@@ -1,18 +1,18 @@
-import React from 'react';
+import React, { FC, Dispatch } from 'react';
 import { useNavigate } from "react-router-dom";
 import styles from './login.module.css'
 import { PasswordInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import { urlApi } from '../utils/context.js'
+import { urlApi } from '../utils/context'
 import { GET_TOKEN, GET_AUTH } from '../services/actions/authorization.js';
 import { useDispatch } from 'react-redux';
-import { checkResponseExport } from '../services/actions/index.js';
+import { checkResponseExport } from '../services/actions/index';
 
 
-export function Login() {
-    const [emailValue, setEmailValue] = React.useState('')
-    const [passwordValue, setPasswordValue] = React.useState('')
+export const Login: FC = () => {
+    const [emailValue, setEmailValue] = React.useState<string>('')
+    const [passwordValue, setPasswordValue] = React.useState<string>('')
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const dispatch: Dispatch<any> = useDispatch();
 
     function onClickRegistration() {
         navigate('/registration');
@@ -34,7 +34,7 @@ export function Login() {
                     payload: res
                 });
                 if (res.success) {
-                    let date = new Date(Date.now() + 1200e3)
+                    let date: Date = new Date(Date.now() + 1200e3)
                     document.cookie = `accessToken=${res.accessToken}; expires=${date}`
                     document.cookie = `refreshToken=${res.refreshToken}`
                     navigate('/')
@@ -43,7 +43,7 @@ export function Login() {
     }
 
     const loginAuthorization = () => {
-        const url = urlApi + "auth/login";
+        const url: string = urlApi + "auth/login";
         return fetch(url, {
             method: 'POST',
             headers: {

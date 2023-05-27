@@ -1,15 +1,15 @@
 import { getCookieExport } from '../services/actions';
-import { urlApi } from '../utils/context.js'
+import { urlApi } from './context'
 
-export const request = async (url, headers) => {
+export const request = async (url:string, headers: any) => {
     try {
         const params = headers;
-        const acctoken = getCookieExport('accessToken');
+        const acctoken: string | undefined = getCookieExport('accessToken');
         params.headers = {...params.headers, Authorization: acctoken};
         const data = await fetch(urlApi + url, params);
         return await checkResponse(data);
     }
-    catch(e) {
+    catch(e: any) {
         if (e.message === "jwt expired") {
             const params = headers;
             const result = await refToken();
@@ -41,6 +41,6 @@ const refToken = async () => {
         }) 
 }
 
-const checkResponse = (res) => {
-    return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
+const checkResponse = (res: any) => {
+    return res.ok ? res.json() : res.json().then((err: any) => Promise.reject(err));
 };

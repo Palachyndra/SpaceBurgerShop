@@ -2,9 +2,9 @@ import React from 'react';
 import styles from './modal.module.css';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
-const Modal = (props) => {
+const Modal = (props: any) => {
     React.useEffect(() => {
-        const close = (e) => {
+        const close = (e: KeyboardEvent) => {
             if (e.key === "Escape") {
                 props.onClose(false)
             }
@@ -22,7 +22,7 @@ const Modal = (props) => {
                         {props.title}
                     </div>
                     <div className={styles.header_container_close} onClick={() => props.onClose(false)}>
-                        <CloseIcon />
+                        <CloseIcon type="primary" />
                     </div>
                 </div>
                 <div>
@@ -33,7 +33,7 @@ const Modal = (props) => {
     );
 }
 
-const ModalOverlay = (props) => {
+const ModalOverlay = (props: any) => {
     return (
         <div className={styles.dark} onClick={() => props.onClose(false)}/>
     )

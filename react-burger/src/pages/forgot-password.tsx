@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styles from './login.module.css'
 import { useNavigate } from "react-router-dom";
 import { EmailInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import { urlApi } from '../utils/context.js'
+import { urlApi } from '../utils/context'
 
-export function ForgotPassword() {
-  const [value, setValue] = React.useState('')
+export const ForgotPassword: FC = () => {
+  const [value, setValue] = React.useState<string>('')
   const navigate = useNavigate();
 
   const postData = () => {
-    const email = value;
-    const url = urlApi + "password-reset";
+    const email:string = value;
+    const url:string = urlApi + "password-reset";
     return fetch(url, {
       method: 'POST',
       headers: {
@@ -26,12 +26,12 @@ export function ForgotPassword() {
 
   function onClickReset() {
     postData()
-      .then((res) => {
+      .then((res:any) => {
         if (res.success) navigate('/reset-password');
       })
   }
 
-  const checkResponse = (res) => {
+  const checkResponse = (res: any) => {
     if (res.ok) {
       return res.json();
     } else

@@ -1,18 +1,19 @@
-import { urlApi } from '../../utils/context.js'
+import { urlApi } from '../../utils/context'
 import { INSTALL_DATA, ADD_ORDER_NUMBER } from './burger.js'
-import { GET_AUTH, GET_TOKEN } from './authorization.js';
-import { request } from '../../utils/request.js';
+import { GET_AUTH } from './authorization.js';
+import { request } from '../../utils/request';
+import { TStoreBurgerData } from '../../types/generalTypes.js'
 
-export const getStore = () => async (dispatch) => {
+export const getStore = () => async (dispatch:any) => {
     const url = urlApi + "ingredients";
     fetch(url)
         .then((checkResponse))
         .then((res) => {
-            const bun = [];
-            const souce = [];
-            const main = [];
+            const bun: Array<TStoreBurgerData> = [];
+            const souce: Array<TStoreBurgerData> = [];
+            const main: Array<TStoreBurgerData> = [];
 
-            res.data.map((prop) => {
+            res.data.map((prop:any) => {
                 if (prop.type === "bun") {
                     prop.count = 0;
                     bun.push(prop);
@@ -26,6 +27,7 @@ export const getStore = () => async (dispatch) => {
                     main.push(prop);
                 }
             })
+
             dispatch({
                 type: INSTALL_DATA, payload: {
                     data: { bun, main, souce },
@@ -38,7 +40,7 @@ export const getStore = () => async (dispatch) => {
         });
 }
 
-export const getOrder = (urlOrders = '', ingredients = {}) => (dispatch) => {
+export const getOrder = (urlOrders:string = '', ingredients:any = {}) => (dispatch: any) => {
     if (ingredients.length != 0)
         postData(urlOrders, { ingredients })
             .then((data) => {
@@ -49,7 +51,7 @@ export const getOrder = (urlOrders = '', ingredients = {}) => (dispatch) => {
             });
 }
 
-const postData = (url = '', data = {}) => {
+const postData = (url:string = '', data:any = {}) => {
     return fetch(url, {
         method: 'POST',
         headers: {
@@ -59,7 +61,7 @@ const postData = (url = '', data = {}) => {
     }).then((checkResponse));
 }
 
-const checkResponse = (res) => {
+const checkResponse = (res:any) => {
     if (res.ok) {
         return res.json();
     } else
@@ -67,7 +69,7 @@ const checkResponse = (res) => {
 }
 
 
-export const authorization = () => async (dispatch) => {
+export const authorization = () => async (dispatch:any) => {
     const data = await request("auth/user", {
         method: 'GET'
     })
@@ -82,21 +84,21 @@ export const authorization = () => async (dispatch) => {
     }
 }
 
-function getCookie(name) {
+function getCookie(name:string) {
     let matches = document.cookie.match(new RegExp(
         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-export function getCookieExport(name) {
-    let matches = document.cookie.match(new RegExp(
+export function getCookieExport(name: string) {
+    let matches: RegExpMatchArray | null = document.cookie.match(new RegExp(
         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-export const checkResponseExport = (res) => {
+export const checkResponseExport = (res: any) => {
     if (res.ok) {
       return res.json();
     } else
