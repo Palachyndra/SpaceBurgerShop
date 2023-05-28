@@ -4,16 +4,16 @@ import { GET_AUTH } from './authorization.js';
 import { request } from '../../utils/request';
 import { TStoreBurgerData } from '../../types/generalTypes.js'
 
-export const getStore = () => async (dispatch:any) => {
+export const getStore = () => async (dispatch: any) => {
     const url = urlApi + "ingredients";
     fetch(url)
-        .then((checkResponse))
+        .then((checkResponseExport))
         .then((res) => {
             const bun: Array<TStoreBurgerData> = [];
             const souce: Array<TStoreBurgerData> = [];
             const main: Array<TStoreBurgerData> = [];
 
-            res.data.map((prop:any) => {
+            res.data.map((prop: TStoreBurgerData) => {
                 if (prop.type === "bun") {
                     prop.count = 0;
                     bun.push(prop);
@@ -40,7 +40,7 @@ export const getStore = () => async (dispatch:any) => {
         });
 }
 
-export const getOrder = (urlOrders:string = '', ingredients:any = {}) => (dispatch: any) => {
+export const getOrder = (urlOrders: string = '', ingredients: string[] = []) => (dispatch: any) => {
     if (ingredients.length != 0)
         postData(urlOrders, { ingredients })
             .then((data) => {
@@ -51,25 +51,18 @@ export const getOrder = (urlOrders:string = '', ingredients:any = {}) => (dispat
             });
 }
 
-const postData = (url:string = '', data:any = {}) => {
+const postData = (url: string = '', data: any = {}) => {
+    console.log(data)
     return fetch(url, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data.ingredients)
-    }).then((checkResponse));
+    }).then((checkResponseExport));
 }
 
-const checkResponse = (res:any) => {
-    if (res.ok) {
-        return res.json();
-    } else
-        return Promise.reject(`Ошибка ${res.status}`);
-}
-
-
-export const authorization = () => async (dispatch:any) => {
+export const authorization = () => async (dispatch: any) => {
     const data = await request("auth/user", {
         method: 'GET'
     })
@@ -84,21 +77,14 @@ export const authorization = () => async (dispatch:any) => {
     }
 }
 
-function getCookie(name:string) {
+export function getCookieExport(name: string) {
     let matches = document.cookie.match(new RegExp(
         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-export function getCookieExport(name: string) {
-    let matches: RegExpMatchArray | null = document.cookie.match(new RegExp(
-        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-}
-
-export const checkResponseExport = (res: any) => {
+export const checkResponseExport = (res: Response) => {
     if (res.ok) {
       return res.json();
     } else

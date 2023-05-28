@@ -1,5 +1,4 @@
 import styles from './ingredient-details.module.css';
-// import { ingredientType } from '../../utils/types'
 import { useSelector } from 'react-redux';
 import { useLocation } from "react-router-dom";
 import { } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -47,6 +46,5 @@ const IngredientDetails = () => {
     )
 }
 
-// IngredientDetails.propTypes = { data: ingredientType };
 
 export default IngredientDetails;

@@ -1,7 +1,6 @@
 import styles from './order-details.module.css';
 import { } from '@ya.praktikum/react-developer-burger-ui-components';
 import donePhoto from '../../images/done.png';
-// import { number } from '../../utils/types';
 import { useSelector } from 'react-redux';
 
 const OrderDetails = () => {
@@ -19,7 +18,5 @@ const OrderDetails = () => {
         </div>
     )
 }
-// OrderDetails.propTypes =
-//     { responceData: number, };
 
 export default OrderDetails;

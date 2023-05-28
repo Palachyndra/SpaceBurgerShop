@@ -12,7 +12,7 @@ export const ResetPassword: FC = () => {
     const navigate = useNavigate();
 
     function onClick() {
-        navigate('/reset-password');
+        navigate('/login');
     }
 
     const postData = () => {

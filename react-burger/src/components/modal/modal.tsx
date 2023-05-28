@@ -1,12 +1,13 @@
 import React from 'react';
 import styles from './modal.module.css';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import { TModalProps } from '../../types/generalTypes';
 
-const Modal = (props: any) => {
+const Modal = (props: TModalProps) => {
     React.useEffect(() => {
         const close = (e: KeyboardEvent) => {
             if (e.key === "Escape") {
-                props.onClose(false)
+                props.onClose()
             }
         }
         window.addEventListener('keydown', close);
@@ -21,7 +22,7 @@ const Modal = (props: any) => {
                     <div className="text text_type_main-large">
                         {props.title}
                     </div>
-                    <div className={styles.header_container_close} onClick={() => props.onClose(false)}>
+                    <div className={styles.header_container_close} onClick={() => props.onClose()}>
                         <CloseIcon type="primary" />
                     </div>
                 </div>

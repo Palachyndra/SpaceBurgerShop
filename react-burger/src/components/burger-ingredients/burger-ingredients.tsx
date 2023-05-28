@@ -1,8 +1,6 @@
 import React, { ReactNode } from 'react';
-// import PropTypes from 'prop-types';
 import style from './burger-ingredients.module.css';
 import { INCREASE_PRODUCT_ITEM } from '../../services/actions/burger.js';
-// import { ingredientType } from '../../utils/types'
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from "react-dnd";
@@ -161,9 +159,5 @@ const MenuCreator = ({ props }: { props: TStoreBurgerData }) => {
       </Link>
    );
 }
-
-
-// MenuCreator.propTypes = { burgerIngredients: ingredientType, };
-// BurgerDataMenu.propTypes = PropTypes.shape({ burgerIngredients: ingredientType }).isRequired;
 
 export default BurgerDataMenu;

@@ -3,6 +3,8 @@ import styles from './login.module.css'
 import { useNavigate } from "react-router-dom";
 import { EmailInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { urlApi } from '../utils/context'
+import { TReset } from '../types/generalTypes';
+import { checkResponseExport } from '../services/actions';
 
 export const ForgotPassword: FC = () => {
   const [value, setValue] = React.useState<string>('')
@@ -17,7 +19,7 @@ export const ForgotPassword: FC = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email: email })
-    }).then((checkResponse));
+    }).then((checkResponseExport));
   }
 
   function onClick() {
@@ -26,16 +28,9 @@ export const ForgotPassword: FC = () => {
 
   function onClickReset() {
     postData()
-      .then((res:any) => {
+      .then((res: TReset) => {
         if (res.success) navigate('/reset-password');
       })
-  }
-
-  const checkResponse = (res: any) => {
-    if (res.ok) {
-      return res.json();
-    } else
-      return Promise.reject(`Ошибка ${res.status}`);
   }
 
   return (

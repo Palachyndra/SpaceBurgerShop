@@ -1,4 +1,5 @@
 import { Location } from 'history';
+import { ReactNode } from "react"
 
 export type TStoreProfile = {
     accessToken: string,
@@ -42,4 +43,15 @@ export type TOrder = {
     types: string,
     uuid: number,
     _id: string
+}
+
+export type TReset = {
+    message: string,
+    success: boolean,
+}
+
+export type TModalProps = {
+    children: ReactNode,
+    title?: string,
+    onClose: () => void,
 }
