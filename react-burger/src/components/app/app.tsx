@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Profile, ResetPassword, ForgotPassword, HomePage, Login, Registration, HistoryOrders, Ingredients } from '../../pages';
 import IngredientDetails from '../ingredient-details/ingredient-details'
 import Modal from '../modal/modal'
 import AppHeader from '../app-header/app-header'
-import { getStore, authorization, getCookieExport } from '../../services/actions/index.js';
+import { getStore, authorization, getCookieExport } from '../../services/actions/index';
 import { useSelector, useDispatch } from 'react-redux';
+import { TLocation } from '../../types/generalTypes'
 
 function App() {
-  const dispatch = useDispatch();
+  const dispatch: Dispatch<any> = useDispatch();
+  // const location = useLocation<TLocation>(); - не работает
   const location = useLocation();
   const navigate = useNavigate();
-  const background = location.state && location.state.background;
+  const background = location.state as { background?: Location};
 
   React.useEffect(() => {
-    const token = getCookieExport('accessToken');
+    const token: string | undefined = getCookieExport('accessToken');
+
     dispatch(getStore());
     if (token)
       dispatch(authorization());
@@ -23,14 +26,16 @@ function App() {
   const closeModal = () => {
     navigate(-1);
   }
-  const dataBurgers = useSelector(store => store.cartReducer.items);
+ 
+  // @ts-ignore
+  const dataBurgers: any = useSelector(store => store.cartReducer.items);
 
   return (
     <>
       {dataBurgers.data && dataBurgers.success ? (
         <>
           <AppHeader />
-          <Routes location={background || location}>
+          <Routes location={location}>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/registration" element={<Registration />} />

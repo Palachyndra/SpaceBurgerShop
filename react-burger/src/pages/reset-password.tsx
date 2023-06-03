@@ -1,22 +1,22 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styles from './login.module.css'
 import { useNavigate } from "react-router-dom";
 import { PasswordInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import { urlApi } from '../utils/context.js'
-import { checkResponseExport } from '../services/actions/index.js';
+import { urlApi } from '../utils/context'
+import { checkResponseExport } from '../services/actions/index';
 
 
-export function ResetPassword() {
-    const [value, setValue] = React.useState('');
-    const [valueInput, setValueInput] = React.useState('');
+export const ResetPassword: FC = () => {
+    const [value, setValue] = React.useState<string>('');
+    const [valueInput, setValueInput] = React.useState<string>('');
     const navigate = useNavigate();
 
     function onClick() {
-        navigate('/reset-password');
+        navigate('/login');
     }
 
     const postData = () => {
-        const url = urlApi + "password-reset/reset";
+        const url:string = urlApi + "password-reset/reset";
         return fetch(url, {
             method: 'POST',
             headers: {

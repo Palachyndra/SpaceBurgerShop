@@ -1,19 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode } from 'react';
 import style from './burger-ingredients.module.css';
 import { INCREASE_PRODUCT_ITEM } from '../../services/actions/burger.js';
-import { ingredientType } from '../../utils/types.js'
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from "react-dnd";
 import { useInView } from "react-intersection-observer";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { TStoreBurgerData } from '../../types/generalTypes'
 
 const BurgerDataMenu = () => {
-   const [current, setCurrent] = React.useState('bun');
+   const [current, setCurrent] = React.useState<string>('bun');
    const [bunsRef, inViewBuns] = useInView({ threshold: 0 });
    const [sauceRef, inViewSauce] = useInView({ threshold: 0 });
    const [mainRef, inViewMain] = useInView({ threshold: 0 });
+   // @ts-ignore
    const burgerIngredients = useSelector(store => store.cartReducer.items.data);
 
    React.useEffect(() => {
@@ -25,31 +25,63 @@ const BurgerDataMenu = () => {
          setCurrent("main")
       }
    })
+   const refs = [
+      {
+         tab: "bun",
+         ref: React.useRef<HTMLHeadingElement>(null),
+      },
+      {
+         tab: "sauce",
+         ref: React.useRef<HTMLHeadingElement>(null),
+      },
+      {
+         tab: "main",
+         ref: React.useRef<HTMLHeadingElement>(null),
+      },
+   ];
 
+   const tabClick = (tab: string) => {
+      refs.find((item) => item.tab === tab)?.ref.current?.scrollIntoView();
+   };
    return (
       <div className={style.custom_scroll}>
          <div className="pt-10 pb-5 text text_type_main-large"> Соберите бургер </div>
          <div className={style.burger_ingredients_menu + " pb-10"} >
-            <Tab active={current === 'bun'}> Булки </Tab>
-            <Tab active={current === 'sauce'}> Соусы </Tab>
-            <Tab active={current === 'main'} > Начинки </Tab>
+            <Tab
+               value="bun"
+               active={current === "bun"}
+               onClick={() => tabClick("bun")} >
+               Булки
+            </Tab>
+            <Tab
+               value="sauce"
+               active={current === "sauce"}
+               onClick={() => tabClick("sauce")} >
+               Соусы
+            </Tab>
+            <Tab
+               value="main"
+               active={current === "main"}
+               onClick={() => tabClick("main")} >
+               Начинки
+            </Tab>
          </div>
          <div className={style.size + " custom-scroll"}>
             <div ref={bunsRef} className="text text_type_main-medium"> Булки </div>
             <div className={style.burger_custom_container + " pt-6"}>
-               {burgerIngredients.bun.map((prop) => {
+               {burgerIngredients.bun.map((prop: TStoreBurgerData ) => {
                   return <MenuCreator key={prop._id} props={prop} />
                })}
             </div>
             <div ref={sauceRef} className="pt-2 pb-6 text text_type_main-medium"> Соусы </div>
             <div className={style.burger_custom_container}>
-               {burgerIngredients.souce.map((prop) => {
+               {burgerIngredients.souce.map((prop: TStoreBurgerData ) => {
                   return <MenuCreator key={prop._id} props={prop} />
                })}
             </div>
             <div ref={mainRef} className="pt-2 pb-6 text text_type_main-medium"> Начинки </div>
             <div className={style.burger_custom_container}>
-               {burgerIngredients.main.map((prop) => {
+               {burgerIngredients.main.map((prop: TStoreBurgerData ) => {
                   return <MenuCreator key={prop._id} props={prop} />
                })}
             </div>
@@ -58,13 +90,14 @@ const BurgerDataMenu = () => {
    );
 }
 
-const MenuCreator = ({ props }) => {
+const MenuCreator = ({ props }: { props: TStoreBurgerData }) => {
    const location = useLocation();
    const dispatch = useDispatch();
    const handleOpen = () => {
       dispatch({ type: INCREASE_PRODUCT_ITEM, payload: props });
    }
 
+   // @ts-ignore
    const burgerIngredients = useSelector(store => store.cartReducer.ingredientsNow);
    const [count, setIngredients] = React.useState(burgerIngredients);
 
@@ -72,7 +105,7 @@ const MenuCreator = ({ props }) => {
       setIngredients(burgerIngredients);
    })
 
-   const [, dragRef] = useDrag((e) => e = {
+   const [, dragRef] = useDrag({
       type: "buns",
       item: {
          bun: [{
@@ -80,7 +113,7 @@ const MenuCreator = ({ props }) => {
             image_mobile: props.image_mobile,
             name: props.name + " (верх)",
             price: props.price,
-            type: "top",
+            types: "top",
             isLocked: "true",
             typeClass: props.type,
             uuid: props._id + Math.floor(Math.random() * 100)
@@ -90,7 +123,7 @@ const MenuCreator = ({ props }) => {
             image_mobile: props.image_mobile,
             name: props.name + " (низ)",
             price: props.price,
-            type: "bottom",
+            types: "bottom",
             isLocked: "true",
             typeClass: props.type,
             uuid: props._id + Math.floor(Math.random() * 100)
@@ -126,9 +159,5 @@ const MenuCreator = ({ props }) => {
       </Link>
    );
 }
-
-
-MenuCreator.propTypes = { burgerIngredients: ingredientType, };
-BurgerDataMenu.propTypes = PropTypes.shape({ burgerIngredients: ingredientType }).isRequired;
 
 export default BurgerDataMenu;

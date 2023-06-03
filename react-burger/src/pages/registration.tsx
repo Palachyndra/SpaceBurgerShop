@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styles from './login.module.css'
 import { useNavigate } from "react-router-dom";
 import { EmailInput, PasswordInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import { urlApi } from '../utils/context.js'
-import { checkResponseExport } from '../services/actions/index.js';
+import { urlApi } from '../utils/context'
+import { checkResponseExport } from '../services/actions/index';
 
 
-export function Registration() {
-  const [nameValue, setNameValue] = React.useState('')
-  const [passwordValue, setPasswordValue] = React.useState('')
-  const [emailValue, setEmailValue] = React.useState('')
+export const Registration: FC = () => {
+  const [nameValue, setNameValue] = React.useState<string>('')
+  const [passwordValue, setPasswordValue] = React.useState<string>('')
+  const [emailValue, setEmailValue] = React.useState<string>('')
   const navigate = useNavigate();
 
   function onClick() {
@@ -24,7 +24,7 @@ export function Registration() {
   }
 
   const createNewAccount = () => {
-    const url = urlApi + "auth/register";
+    const url:string = urlApi + "auth/register";
     return fetch(url, {
       method: 'POST',
       headers: {
