@@ -68,8 +68,8 @@ export type TWsData = {
     total: number,
     totalToday: number
 }
-type TwsDataOrders = {
-    created: string,
+export type TwsDataOrders = {
+    createdAt: string,
     ingredients: Array<string>
     name: string,
     number: number,

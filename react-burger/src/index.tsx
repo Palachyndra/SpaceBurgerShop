@@ -9,6 +9,8 @@ import { Provider } from 'react-redux';
 import thunk from "redux-thunk";
 import { rootReducer } from './services/reducers/index';
 import { BrowserRouter } from 'react-router-dom';
+import { wsApi } from './utils/context';
+import { socketMiddleware } from './services/middleware/ws-middleware';
 
 
 declare global {
@@ -19,7 +21,7 @@ declare global {
 const composeEnhancers = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] as typeof compose || compose;
 
 const enhancer = composeEnhancers();
-const store = createStore(rootReducer, applyMiddleware(thunk));
+const store = createStore(rootReducer, applyMiddleware(thunk, socketMiddleware(wsApi)));
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

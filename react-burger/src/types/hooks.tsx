@@ -8,6 +8,7 @@ import type { } from 'redux-thunk/extend-redux';
 import { rootReducer } from '../services/reducers';
 import { TItems } from '../services/actions/burger';
 import { TAuth } from '../services/actions/authorization';
+import { TWS } from '../services/actions/ws';
 
 type RootState = ReturnType<typeof rootReducer>;
 type AppThunk<ReturnType = void> = ThunkAction<
@@ -19,7 +20,7 @@ type AppThunk<ReturnType = void> = ThunkAction<
 
 export type AppDispatch<TReturnType = void> = (
   action: TItems
-) => TReturnType | TAuth | AppThunk<TReturnType>;
+) => TReturnType | TAuth | TWS | AppThunk<TReturnType>;
 
 export const useDispatch: () => AppDispatch = dispatchHook;
 export const useSelector: TypedUseSelectorHook<RootState> = selectorHook;

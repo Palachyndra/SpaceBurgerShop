@@ -3,16 +3,7 @@ import { TStoreBurgerData } from '../../types/generalTypes';
 import { TItems } from '../actions/burger';
 import { items, ingredientsNow, productNow, orderNumber, sumOrders } from '../initialData';
 
-type TState = {
-    items: any,
-    ingredientsNow: any,
-    productNow: any,
-    orderNumber: any,
-    typeClass: any,
-    sumOrders: any,
-}
-
-const initialState: TState = {
+const initialState = {
     items,
     ingredientsNow,
     productNow,

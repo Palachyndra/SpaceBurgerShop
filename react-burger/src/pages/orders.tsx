@@ -1,12 +1,14 @@
 
-import React, { FC, Dispatch } from 'react';
+import React, { FC, Dispatch, useEffect } from 'react';
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { checkResponseExport, getCookieExport } from '../services/actions';
-import { urlApi } from '../utils/context';
+import { urlApi, wsApi } from '../utils/context';
 import styles from './login.module.css'
 import { EXIT_AUTH } from '../constants/authorization';
 import { FeedElements } from '../components/feed/feed';
+import { WS_CONNECTION_CLOSED, WS_CONNECTION_START_WITH_TOKEN } from '../constants/ws';
+import { useSelector } from '../types/hooks';
 
 export const HistoryOrders: FC = () => {
     const navigate = useNavigate();
@@ -58,8 +60,18 @@ export const HistoryOrders: FC = () => {
                 };
             })
     }
+    
+    const wsConnected = useSelector((state) => state.wsReducer.wsConnected);
+    useEffect(() => {
+        let token = getCookieExport("accessToken")
+        if (token) token = token.substring(7);
+        dispatch({ type: WS_CONNECTION_START_WITH_TOKEN, token: token });
+        return () => {
+            dispatch({ type: WS_CONNECTION_CLOSED });
+        };
+    }, [dispatch]);
 
-    return (
+    return wsConnected ? (
         <>
             {authorization ? (
                 <div className={styles.container_row}>
@@ -74,5 +86,5 @@ export const HistoryOrders: FC = () => {
                 </div>
             ) : <Navigate to={location?.state?.from || '/login'} />}
         </>
-    )
+    ) : <div> Loading </div>
 }
