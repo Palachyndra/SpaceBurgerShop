@@ -28,8 +28,8 @@ function AppHeader() {
                <div className={'pl-2 text text_type_main-default ' + (location.pathname !== '/' && 'text_color_inactive')} onClick={() => navigate('/')}> Конструктор </div>
             </div>
             <div className={style.mini_container + " pl-5 pr-2 pb-4 pt-4"}>
-               <ListIcon type="secondary" />
-               <div className='pl-2 text text_type_main-default text_color_inactive'>  Лента заказов  </div>
+               <ListIcon type={location.pathname !== '/feed' ? "secondary" : "primary"} />
+               <div className={'pl-2 text text_type_main-default '  + (!location.pathname.includes('/feed') && ' text_color_inactive')} onClick={() => navigate('/feed')}>  Лента заказов  </div>
             </div>
          </div>
          <Logo />
