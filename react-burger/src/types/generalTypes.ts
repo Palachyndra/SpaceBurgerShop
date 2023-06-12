@@ -26,7 +26,7 @@ export type TStoreBurgerData = {
     type: string | undefined,
     count: number | undefined,
     uuid: number | undefined,
-    isLocked : boolean | undefined
+    isLocked: boolean | undefined
 }
 
 export type TLocation = {
@@ -54,4 +54,26 @@ export type TModalProps = {
     children: ReactNode,
     title?: string,
     onClose: () => void,
+}
+
+export type TData = {
+    bun: TStoreBurgerData,
+    souce: TStoreBurgerData,
+    main: TStoreBurgerData
+}
+
+export type TWsData = {
+    orders: TwsDataOrders,
+    success: boolean,
+    total: number,
+    totalToday: number
+}
+type TwsDataOrders = {
+    created: string,
+    ingredients: Array<string>
+    name: string,
+    number: number,
+    status: string,
+    updateAt: string
+    _id: string
 }

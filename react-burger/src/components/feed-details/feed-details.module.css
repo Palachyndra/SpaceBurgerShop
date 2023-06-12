@@ -1,0 +1,41 @@
+.color {
+    color: #00CCCC
+}
+
+.container_all {
+    padding-left: 30px;
+    padding-left: 30px;
+}
+
+.container {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.container_ingredients {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.image {
+    object-fit: none;
+    border-radius: 50%;
+    border: 2px solid rgb(122 7 165);
+    width: 80px;
+    height: 80px;
+    background: #1C1C21;
+}
+
+.right_text {
+    display: flex;
+}
+
+.bottom_text {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: space-between;
+}

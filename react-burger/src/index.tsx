@@ -7,7 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { createStore, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from "redux-thunk";
-import { rootReducer } from './services/reducers/index.js';
+import { rootReducer } from './services/reducers/index';
 import { BrowserRouter } from 'react-router-dom';
 
 

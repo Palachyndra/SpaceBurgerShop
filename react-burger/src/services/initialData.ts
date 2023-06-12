@@ -1,0 +1,11 @@
+export const ingredientsNow: any = { bun: {}, ingredients: {} };
+export const productNow: any = {};
+export const orderNumber: any = {};
+export const items: any = {};
+export const sumOrders: number = 0;
+export const authorizationName: string = '';
+export const authorizationEmail: string = '';
+export const authorizationPassword: string = '';
+export const accessToken: string = '';
+export const refreshToken: string = '';
+export const authorization: boolean = false;

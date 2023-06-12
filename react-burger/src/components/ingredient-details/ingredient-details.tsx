@@ -1,16 +1,14 @@
 import styles from './ingredient-details.module.css';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../types/hooks';
 import { useLocation } from "react-router-dom";
 import { } from '@ya.praktikum/react-developer-burger-ui-components';
-import { TLocation, TStoreBurgerData } from '../../types/generalTypes'
+import { TStoreBurgerData } from '../../types/generalTypes'
 
 
 const IngredientDetails = () => {
-  // const location = useLocation<TLocation>(); - не работает
     const location = useLocation();
     const currentId = location.pathname.split('/ingredients/')[1];
     
-    // @ts-ignores
     const ingredients = useSelector(store => store.cartReducer.items.data);
 
     const data = ingredients.bun.filter((item: TStoreBurgerData) => item._id === currentId)[0] ?

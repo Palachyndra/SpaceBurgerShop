@@ -1,8 +1,8 @@
 import { urlApi } from '../../utils/context'
-import { INSTALL_DATA, ADD_ORDER_NUMBER } from './burger.js'
-import { GET_AUTH } from './authorization.js';
+import { INSTALL_DATA, ADD_ORDER_NUMBER } from '../../constants/burger'
+import { GET_AUTH } from '../../constants/authorization';
 import { request } from '../../utils/request';
-import { TStoreBurgerData } from '../../types/generalTypes.js'
+import { TStoreBurgerData } from '../../types/generalTypes'
 
 export const getStore = () => async (dispatch: any) => {
     const url = urlApi + "ingredients";
@@ -52,7 +52,6 @@ export const getOrder = (urlOrders: string = '', ingredients: string[] = []) => 
 }
 
 const postData = (url: string = '', data: any = {}) => {
-    console.log(data)
     return fetch(url, {
         method: 'POST',
         headers: {

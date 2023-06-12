@@ -1,4 +1,5 @@
-import { GET_TOKEN, GET_AUTH, EXIT_AUTH } from '../actions/authorization';
+import { GET_TOKEN, GET_AUTH, EXIT_AUTH } from '../../constants/authorization';
+import { TAuth } from '../actions/authorization';
 import { authorization, authorizationName, authorizationEmail, authorizationPassword, refreshToken, accessToken } from '../initialData';
 
 const authorizationData = {
@@ -10,7 +11,7 @@ const authorizationData = {
     authorization,
 };
 
-export const authReducer = (state = authorizationData, action) => {
+export const authReducer = (state = authorizationData, action: TAuth) => {
     switch (action.type) {
         case GET_TOKEN: {
             return {

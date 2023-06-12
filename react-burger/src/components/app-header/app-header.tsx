@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { BurgerIcon, ListIcon, Logo, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import style from './app-header.module.css';
+import { useSelector } from '../../types/hooks';
 
 function AppHeader() {
    const location = useLocation();
    const navigate = useNavigate();
-   // @ts-ignore
+
    const authorization = useSelector(store => store.authReducer.authorization);
    const [auth, setAuth] = React.useState<boolean>(authorization);
 

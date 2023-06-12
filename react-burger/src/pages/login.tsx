@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styles from './login.module.css'
 import { PasswordInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { urlApi } from '../utils/context'
-import { GET_TOKEN, GET_AUTH } from '../services/actions/authorization.js';
+import { GET_TOKEN, GET_AUTH } from '../constants/authorization';
 import { useDispatch } from 'react-redux';
 import { checkResponseExport } from '../services/actions/index';
 

@@ -1,7 +1,18 @@
-import { DELETE_ITEM, ADD_ORDER_NUMBER, INCREASE_ITEM_BUNS, INCREASE_ITEM_INGREDIENTS, INCREASE_PRODUCT_ITEM, INSTALL_DATA, CHANGE_INGREDIENTS_ITEM, CHANGE_BUNS_ITEM, SWITCH_ING_ITEM, INCREASE_SUM_ORDER, INCREASE_ORDER, DECREASE_SUM_ORDER } from '../actions/burger';
+import { DELETE_ITEM, ADD_ORDER_NUMBER, INCREASE_ITEM_BUNS, INCREASE_ITEM_INGREDIENTS, INCREASE_PRODUCT_ITEM, INSTALL_DATA, CHANGE_INGREDIENTS_ITEM, CHANGE_BUNS_ITEM, SWITCH_ING_ITEM, INCREASE_SUM_ORDER, INCREASE_ORDER, DECREASE_SUM_ORDER } from '../../constants/burger';
+import { TStoreBurgerData } from '../../types/generalTypes';
+import { TItems } from '../actions/burger';
 import { items, ingredientsNow, productNow, orderNumber, sumOrders } from '../initialData';
 
-const initialState = {
+type TState = {
+    items: any,
+    ingredientsNow: any,
+    productNow: any,
+    orderNumber: any,
+    typeClass: any,
+    sumOrders: any,
+}
+
+const initialState: TState = {
     items,
     ingredientsNow,
     productNow,
@@ -10,13 +21,12 @@ const initialState = {
     sumOrders
 };
 
-export const cartReducer = (state = initialState, action) => {
-    const data = action.payload;
+export const cartReducer = (state = initialState, action: TItems) => {
     switch (action.type) {
         case INSTALL_DATA: {
             return {
                 ...state,
-                items: data
+                items: action.payload
             };
         }
         case INCREASE_ITEM_BUNS: {
@@ -26,17 +36,18 @@ export const cartReducer = (state = initialState, action) => {
             };
         }
         case INCREASE_ITEM_INGREDIENTS: {
+            const ingredients: any = state.ingredientsNow.ingredients
             return {
                 ...state,
                 ingredientsNow: {
                     bun: { ...state.ingredientsNow.bun },
-                    ingredients: Array.from(state.ingredientsNow.ingredients).concat(action.payload)
+                    ingredients: Array.from(ingredients).concat(action.payload)
                 }
             };
         }
         case DELETE_ITEM: {
-            let ingredients = [];
-            let deleteItem = [];
+            let ingredients: any = [];
+            let deleteItem: any = [];
             Object.keys(state.ingredientsNow.ingredients).forEach(key => {
                 if (state.ingredientsNow.ingredients[key].uuid !== action.payload.uuid) {
                     ingredients.push(state.ingredientsNow.ingredients[key]);
@@ -64,26 +75,26 @@ export const cartReducer = (state = initialState, action) => {
             };
         }
         case INCREASE_PRODUCT_ITEM: {
+            const actionType: any = action.payload
             return {
                 ...state,
-                productNow: { ...state.productNow, data }
+                productNow: { ...state.productNow, actionType }
             };
         }
         case ADD_ORDER_NUMBER: {
             return {
                 ...state,
-                orderNumber: data
+                orderNumber: action.payload
             };
         }
         case CHANGE_BUNS_ITEM: {
-            
             if (state.items.data.bun.length) {
-                state.items.data.bun.forEach(item => {
+                state.items.data.bun.forEach((item: any) => {
                     item.count = 0;
                 });
-                state.items.data.bun.filter((item) => item._id === action.payload.bun[0]._id)
-                    .map(item => item.count = 2
-                )
+                state.items.data.bun.filter((item: any) => item._id === action.payload.bun[0]._id)
+                    .map((item: any) => item.count = 2
+                    )
             }
 
             return {
@@ -93,14 +104,14 @@ export const cartReducer = (state = initialState, action) => {
         }
         case CHANGE_INGREDIENTS_ITEM: {
 
-            if (data.typeClass === 'sauce' && state.items.data.souce.length !== 0) {
-                state.items.data.souce.filter((item) =>
-                    item._id === data._id && item.count++);
+            if (action.payload.typeClass === 'sauce' && state.items.data.souce.length !== 0) {
+                state.items.data.souce.filter((item: any) =>
+                    item._id === action.payload._id && item.count++);
             }
 
-            if (data.typeClass === 'main' && state.items.data.main.length !== 0) {
-                state.items.data.main.filter((item) =>
-                    item._id === data._id && item.count++);
+            if (action.payload.typeClass === 'main' && state.items.data.main.length !== 0) {
+                state.items.data.main.filter((item: any) =>
+                    item._id === action.payload._id && item.count++);
             }
 
             return {
@@ -125,7 +136,7 @@ export const cartReducer = (state = initialState, action) => {
             };
         }
         case INCREASE_ORDER: {
-            let sum = 0;
+            let sum: number = 0;
             Object.keys(action.payload.bun).forEach(key => {
                 sum = sum + action.payload.bun[key].price;
             });

@@ -1,3 +1,8 @@
+.main a {
+    color: white;
+    text-decoration: none;
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -14,7 +19,7 @@
 }
 
 .container_box {
-    display: flex; 
+    display: flex;
     flex-direction: column;
 }
 

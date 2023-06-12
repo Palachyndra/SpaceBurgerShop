@@ -1,30 +1,26 @@
 import React from 'react';
 import style from './burger-constructor.module.css';
-import { INCREASE_SUM_ORDER, CHANGE_BUNS_ITEM, INCREASE_ORDER, SWITCH_ING_ITEM, CHANGE_INGREDIENTS_ITEM, DELETE_ITEM, DECREASE_SUM_ORDER } from '../../services/actions/burger.js';
+import { INCREASE_SUM_ORDER, CHANGE_BUNS_ITEM, INCREASE_ORDER, SWITCH_ING_ITEM, CHANGE_INGREDIENTS_ITEM, DELETE_ITEM, DECREASE_SUM_ORDER } from '../../constants/burger';
 import { getOrder } from '../../services/actions';
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal'
 import OrderDetails from '../order-details/order-details'
 import { urlApi } from '../../utils/context'
-import { useSelector, useDispatch } from 'react-redux';
 import { useDrop, useDrag } from "react-dnd";
 import { useNavigate } from 'react-router-dom';
 import { TOrder } from '../../types/generalTypes';
+import { useSelector, useDispatch } from '../../types/hooks';
 
 const urlOrders = urlApi + 'orders';
 
 const BurgerConstructor = () => {
     const dispatch = useDispatch();
-    // @ts-ignore
     const dataOrders = useSelector(store => store.cartReducer.ingredientsNow);
-    // @ts-ignore
     const sumState = useSelector(store => store.cartReducer.sumOrders);
-    // @ts-ignore
     const orderNumber = useSelector(store => store.cartReducer.orderNumber);
     const [isOpen, setIsOpen] = React.useState(false);
     const [cards, setCards] = React.useState(dataOrders.ingredients);
     const navigate = useNavigate();
-    // @ts-ignore
     const authorization = useSelector(store => store.authReducer.authorization);
     const [auth, setAuth] = React.useState(authorization);
 
@@ -51,7 +47,7 @@ const BurgerConstructor = () => {
             Object.keys(dataOrders.ingredients).forEach(key => {
                 ingredients.push(dataOrders.ingredients[key]._id);
             });
-            // @ts-ignore
+            // @ts-ignore - не знаю, как поправить
             dispatch(getOrder(urlOrders, { ingredients }));
         }
     }
@@ -59,10 +55,12 @@ const BurgerConstructor = () => {
     const [, dropIngredients] = useDrop({
         accept: "ingredients",
         drop(payload) {
+             // @ts-ignore - не знаю, как поправить
             dispatch({
                 type: CHANGE_INGREDIENTS_ITEM,
                 payload
             });
+             // @ts-ignore - не знаю, как поправить
             dispatch({ type: INCREASE_SUM_ORDER, payload });
         },
     })
@@ -122,7 +120,7 @@ const BurgerConstructor = () => {
                         <>
                             {Object.entries(dataOrders.bun).map(([index, prop]) => {
                                 return (
-                                    // @ts-ignore - если так нельзя, то подскажите пж, как это можно исправить
+                                    // @ts-ignore -  подскажите пж, как это можно исправить
                                     <TopBun refBun={dropTopBun} props={prop} key={prop._id + index} />
                                 )
                             })}
@@ -136,7 +134,7 @@ const BurgerConstructor = () => {
                         <div ref={dropIngredients} className={style.constructor_elements + ' custom-scroll'}>
                         
                             {Object.entries(cards).map(([i, card]) =>
-                            // @ts-ignore - подскажите пж, как это можно исправить
+                            // @ts-ignore -  подскажите пж, как это можно исправить
                             renderCard(card, i)
                             )}
                         </div>
@@ -149,7 +147,7 @@ const BurgerConstructor = () => {
                         <>
                             {Object.entries(dataOrders.bun).map(([index, prop]) => {
                                 return (
-                                    // @ts-ignore - если так нельзя, то подскажите пж, как это можно исправить
+                                    // @ts-ignore -  подскажите пж, как это можно исправить
                                     <BottomBun refBun={dropBottomBun} props={prop} key={prop._id + index} />
                                 )    
                             })}
@@ -206,8 +204,7 @@ const MiddleOrder = ({ id, props, index, moveCard } : {id: number, props: TOrder
             const hoverMiddleY =
                 (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
 
-            const clientOffset = monitor.getClientOffset() 
-            // @ts-ignore - тоже не знаю, как исправить
+            const clientOffset: any | null = monitor.getClientOffset() 
             const hoverClientY = clientOffset.y - hoverBoundingRect.top
             if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
                 return
