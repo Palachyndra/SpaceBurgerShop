@@ -1,15 +1,36 @@
+import React, { useEffect, Dispatch, useCallback } from 'react';
 import styles from './feed-details.module.css';
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useSelector } from '../../types/hooks';
+import { useDispatch, useSelector } from '../../types/hooks';
 import { useLocation } from "react-router-dom";
 import { TStoreBurgerData } from '../../types/generalTypes';
+import { getCookieExport } from '../../services/actions';
+import { WS_CONNECTION_CLOSED, WS_CONNECTION_START, WS_CONNECTION_START_WITH_TOKEN } from '../../constants/ws';
+import { wsApi } from '../../utils/context';
 
 const FeedDetails = () => {
+    const dispatch: Dispatch<any> = useDispatch();
+    // useEffect(() => {
+    //     let token = getCookieExport("accessToken")
+    //     if (token) token = token.substring(7);
+    //     dispatch({ type: WS_CONNECTION_START_WITH_TOKEN, url: `${wsApi}?token=${token}` });
+    //     return () => {
+    //         dispatch({ type: WS_CONNECTION_CLOSED });
+    //     };
+    // }, []);
     const location = useLocation();
-    let id = location.pathname.split('/')[2];
+    let id = '';
+    if (location.pathname.startsWith('/profile')) {
+        id = location.pathname.split('/')[3]
+    } else {
+        id = location.pathname.split('/')[2]
+    }
     const wsReducer = useSelector((state) => state.wsReducer);
+
     const dataBurgers = useSelector((store) => store.cartReducer.items.data);
-    const element: any = Object.entries(wsReducer.messages.orders).filter((element: any) => element[1]._id === id)[0][1]
+    const element: any = Object.values(wsReducer.messages.orders).filter((element: any) => element._id === id)[0]
+    console.log(element)
+
     let sum: number = 0;
     const countItems: any = [];
     for (const item of element.ingredients) {
@@ -31,14 +52,14 @@ const FeedDetails = () => {
                                 dataBurgers.main.filter((item: TStoreBurgerData) => item._id === element)[0] :
                                 "";
                     const value: any = Object.entries(countItems).filter((el) => el[0] === data._id)
-                    sum = sum + value[0][1] * data.price;
+                    sum = sum + value[0] * data.price;
                     return (
                         <div className={styles.container_ingredients + " mb-5 pr-6"} key={data._id}>
                             <img className={styles.image + ' mr-4'} src={data.image_mobile} alt={data.name} />
                             <div className='text text_type_main-default'> {data.name} </div>
                             <div className={styles.right_text + ' pl-4'}>
                                 <div className='text text_type_digits-default mr-2'>
-                                    {value[0][1]} x {data.price}
+                                    1 x {data.price}
                                 </div>
                                 <CurrencyIcon type="primary" />
                             </div>

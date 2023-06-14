@@ -65,7 +65,7 @@ export const HistoryOrders: FC = () => {
     useEffect(() => {
         let token = getCookieExport("accessToken")
         if (token) token = token.substring(7);
-        dispatch({ type: WS_CONNECTION_START_WITH_TOKEN, token: token });
+        dispatch({ type: WS_CONNECTION_START_WITH_TOKEN, url:`${wsApi}?token=${token}` });
         return () => {
             dispatch({ type: WS_CONNECTION_CLOSED });
         };

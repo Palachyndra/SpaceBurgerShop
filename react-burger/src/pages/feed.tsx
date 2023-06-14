@@ -6,6 +6,7 @@ import { } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useDispatch, useSelector } from '../types/hooks';
 import { getCookieExport } from '../services/actions';
 import { useLocation, Navigate } from "react-router-dom";
+import { wsApi } from '../utils/context';
 
 export const Lenta: FC = () => {
     const wsReducer = useSelector((state) => state.wsReducer);
@@ -23,10 +24,10 @@ export const Lenta: FC = () => {
     const authorization: boolean = checkAuth()
 
     useEffect(() => {
-        // @ts-ignore - не знаю, как поправить
-        dispatch({ type: WS_CONNECTION_START });
+        // @ts-ignore
+        dispatch({ type: WS_CONNECTION_START, url: `${wsApi}/all`  });
         return () => {
-            // @ts-ignore - не знаю, как поправить
+            // @ts-ignore
             dispatch({ type: WS_CONNECTION_CLOSED });
         };
     }, [dispatch]);

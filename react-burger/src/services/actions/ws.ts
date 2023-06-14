@@ -3,11 +3,12 @@ import { TWsData } from '../../types/generalTypes';
 
 export interface IWSConnectionStart {
     readonly type: typeof WS_CONNECTION_START;
+    readonly url: string;
 }
 
 export interface IWSConnectionStartWithToken {
     readonly type: typeof WS_CONNECTION_START_WITH_TOKEN;
-    readonly token: string
+    readonly url: string
 }
 
 
@@ -51,6 +52,33 @@ export const wsProfileClosed = (): IProfileClosedAction => {
     };
 };
 
+export type TWSStoreActions = {
+    wsInit: typeof WS_CONNECTION_START;
+    onOpen: typeof WS_CONNECTION_SUCCESS;
+    onClose: typeof WS_CONNECTION_CLOSED;
+    onError: typeof WS_CONNECTION_ERROR;
+    onMessage: typeof WS_GET_MESSAGE;
+};
+
+export type TWSStoreActionsWithToken = Omit<TWSStoreActions, "wsInit"> & {
+    wsInit: typeof WS_CONNECTION_START_WITH_TOKEN;
+};
+
+export const WSActions: TWSStoreActions = {
+    wsInit: WS_CONNECTION_START,
+    onOpen: WS_CONNECTION_SUCCESS,
+    onClose: WS_CONNECTION_CLOSED,
+    onError: WS_CONNECTION_ERROR,
+    onMessage: WS_GET_MESSAGE,
+};
+
+export const WSActionsWithToken: TWSStoreActionsWithToken = {
+    wsInit: WS_CONNECTION_START_WITH_TOKEN,
+    onOpen: WS_CONNECTION_SUCCESS,
+    onClose: WS_CONNECTION_CLOSED,
+    onError: WS_CONNECTION_ERROR,
+    onMessage: WS_GET_MESSAGE,
+};
 
 export type TWS =
     | IWSConnectionStart
@@ -59,5 +87,4 @@ export type TWS =
     | IWSConnectionError
     | IWSConnectionClosed
     | IWSGetMessage
-    | IProfileConnectAction
-    ;
+    | IProfileConnectAction;

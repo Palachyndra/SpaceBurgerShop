@@ -1,40 +1,31 @@
 import { Middleware, MiddlewareAPI } from "redux";
-import {
-    WS_CONNECTION_CLOSED,
-    WS_CONNECTION_ERROR,
-    WS_CONNECTION_START,
-    WS_CONNECTION_START_WITH_TOKEN,
-    WS_CONNECTION_SUCCESS,
-    WS_GET_MESSAGE
-} from "../../constants/ws";
+import { WS_CONNECTION_START_WITH_TOKEN } from "../../constants/ws";
 import { getCookieExport } from "../actions";
-import { TWS } from "../actions/ws";
+import { TWS, TWSStoreActions, TWSStoreActionsWithToken } from "../actions/ws";
 import { TWsData } from "../../types/generalTypes";
+import { wsApi } from "../../utils/context";
 
-export const socketMiddleware = (wsApi: string): Middleware => {
-
+export const socketMiddleware = (wsActions: TWSStoreActions | TWSStoreActionsWithToken): Middleware => {
     return ((store: MiddlewareAPI) => {
         let socket: WebSocket | null = null;
 
         return (next) => (action: TWS) => {
             const { dispatch } = store;
             const { type } = action;
+            const { wsInit, onOpen, onClose, onError, onMessage } = wsActions;
+            console.log(type)
 
-            if (type === WS_CONNECTION_START) {
-                socket = new WebSocket(`${wsApi}/all`);
-            }
-
-            if (type === WS_CONNECTION_START_WITH_TOKEN) {
-                socket = new WebSocket(`${wsApi}?token=${action.token}`);
+            if (type === wsInit) {
+                socket = new WebSocket(action.url);
             }
 
             if (socket) {
                 socket.onopen = (event) => {
-                    dispatch({ type: WS_CONNECTION_SUCCESS, payload: event });
+                    dispatch({ type: onOpen, payload: event });
                 };
 
                 socket.onerror = (event) => {
-                    dispatch({ type: WS_CONNECTION_ERROR, payload: event });
+                    dispatch({ type: onClose, payload: event });
                 };
                 socket.onmessage = (event) => {
                     const { data } = event;
@@ -44,20 +35,23 @@ export const socketMiddleware = (wsApi: string): Middleware => {
 
                         if (refreshToken) {
                             const token = getCookieExport("accessToken");
-                            socket = new WebSocket(`${wsApi}?token=${token}`);
+                            dispatch({
+                                type: WS_CONNECTION_START_WITH_TOKEN,
+                                url: `${wsApi}?token=${token}`,
+                            });
                         }
                     }
 
-                    dispatch({ type: WS_GET_MESSAGE, payload: WSData });
+                    dispatch({ type: onMessage, payload: WSData });
                 };
 
                 socket.onclose = (event) => {
                     if (event.code !== 1000) {
-                        dispatch({ type: WS_CONNECTION_ERROR, payload: event });
+                        dispatch({ type: onError, payload: event });
                     }
                 };
 
-                if (type === WS_CONNECTION_CLOSED) {
+                if (type === onClose) {
                     socket.close(1000);
                 }
             }

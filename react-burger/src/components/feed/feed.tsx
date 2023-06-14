@@ -7,10 +7,10 @@ import { TStoreBurgerData } from '../../types/generalTypes';
 export const FeedElements = () => {
     const location = useLocation();
     let url = '/feed/'
-    if (location.pathname === '/profile/orders') url = '/profile/orders/';
+    if (location.pathname.startsWith('/profile')) url = '/profile/orders/';
     const maxIngredients = 6;
     let sum = 0;
-    const wsReducer = useSelector((state) => state.wsReducer);
+    let wsReducer = useSelector((state) => state.wsReducer);
     const dataBurgers = useSelector((store) => store.cartReducer.items.data);
 
     return wsReducer.wsConnected ? (

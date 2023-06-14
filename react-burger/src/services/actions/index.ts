@@ -52,10 +52,12 @@ export const getOrder = (urlOrders: string = '', ingredients: string[] = []) => 
 }
 
 const postData = (url: string = '', data: any = {}) => {
+    const token: any = getCookieExport("accessToken"); 
     return fetch(url, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
+            "Authorization": token,
         },
         body: JSON.stringify(data.ingredients)
     }).then((checkResponseExport));
