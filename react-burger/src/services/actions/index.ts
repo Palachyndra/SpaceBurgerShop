@@ -40,7 +40,7 @@ export const getStore = () => async (dispatch: any) => {
         });
 }
 
-export const getOrder = (urlOrders: string = '', ingredients: string[] = []) => (dispatch: any) => {
+export const getOrder = (urlOrders: string = '', ingredients: any) => (dispatch: any) => {
     if (ingredients.length != 0)
         postData(urlOrders, { ingredients })
             .then((data) => {

@@ -1,4 +1,5 @@
-import { ThunkAction } from 'redux-thunk';
+import {Action, ActionCreator, Dispatch} from "redux";
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import {
   TypedUseSelectorHook,
   useDispatch as dispatchHook,
@@ -11,16 +12,14 @@ import { TAuth } from '../services/actions/authorization';
 import { TWS } from '../services/actions/ws';
 
 type RootState = ReturnType<typeof rootReducer>;
-type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  TItems | TAuth
+
+type AppThunk<TReturn = void> = ActionCreator<
+  ThunkAction<TReturn, Action, RootState, TItems>
 >;
 
-export type AppDispatch<TReturnType = void> = (
-  action: TItems
-) => TReturnType | TAuth | TWS | AppThunk<TReturnType>;
+export type AppDispatch = Dispatch<TItems>;
 
-export const useDispatch: () => AppDispatch = dispatchHook;
+type DispatchFunc = () => AppDispatch | AppThunk;
+
+export const useDispatch: DispatchFunc = dispatchHook;
 export const useSelector: TypedUseSelectorHook<RootState> = selectorHook;

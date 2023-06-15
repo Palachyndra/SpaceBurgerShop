@@ -24,10 +24,8 @@ export const Lenta: FC = () => {
     const authorization: boolean = checkAuth()
 
     useEffect(() => {
-        // @ts-ignore
         dispatch({ type: WS_CONNECTION_START, url: `${wsApi}/all`  });
         return () => {
-            // @ts-ignore
             dispatch({ type: WS_CONNECTION_CLOSED });
         };
     }, [dispatch]);

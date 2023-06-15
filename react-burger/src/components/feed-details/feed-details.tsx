@@ -33,7 +33,6 @@ const FeedDetails = () => {
             }
         }
         return () => {
-            // @ts-ignore
             dispatch({ type: WS_CONNECTION_CLOSED });
         };
     }, [dispatch]);
