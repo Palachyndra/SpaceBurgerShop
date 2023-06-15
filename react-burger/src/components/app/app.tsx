@@ -8,7 +8,6 @@ import { getStore, authorization, getCookieExport } from '../../services/actions
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../../types/hooks';
 import FeedDetails from '../feed-details/feed-details';
-import { FeedElements } from '../feed/feed';
 
 function App() {
   const dispatch: Dispatch<any> = useDispatch();
@@ -47,6 +46,7 @@ function App() {
             <Route path="/feed" element={<Lenta />} />
             <Route path="/ingredients/:id" element={<IngredientDetails />} />
             <Route path="/feed/:id" element={<FeedDetails />} />
+            <Route path="/profile/orders/:id" element={<FeedDetails />} />
           </Routes>
 
           {background && (

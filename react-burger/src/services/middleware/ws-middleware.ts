@@ -13,7 +13,6 @@ export const socketMiddleware = (wsActions: TWSStoreActions | TWSStoreActionsWit
             const { dispatch } = store;
             const { type } = action;
             const { wsInit, onOpen, onClose, onError, onMessage } = wsActions;
-            console.log(type)
 
             if (type === wsInit) {
                 socket = new WebSocket(action.url);

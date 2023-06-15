@@ -3,6 +3,7 @@ import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burge
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from '../../types/hooks';
 import { TStoreBurgerData } from '../../types/generalTypes';
+import { dataFilter } from '../../utils/context';
 
 export const FeedElements = () => {
     const location = useLocation();
@@ -27,13 +28,7 @@ export const FeedElements = () => {
                             <div className={styles.orders_bottom + ' mb-6 mt-6'}>
                                 <div className={styles.orders_bottom_left}>
                                     {element[1].ingredients.map((element: any, index: number) => {
-                                        const data = dataBurgers.bun.filter((item: TStoreBurgerData) => item._id === element)[0] ?
-                                            dataBurgers.bun.filter((item: TStoreBurgerData) => item._id === element)[0] :
-                                            dataBurgers.souce.filter((item: TStoreBurgerData) => item._id === element)[0] ?
-                                                dataBurgers.souce.filter((item: TStoreBurgerData) => item._id === element)[0] :
-                                                dataBurgers.main.filter((item: TStoreBurgerData) => item._id === element)[0] ?
-                                                    dataBurgers.main.filter((item: TStoreBurgerData) => item._id === element)[0] :
-                                                    "";
+                                        const data = dataFilter(dataBurgers, element);
                                         const zIndex = maxIngredients - index;
                                         const right = 20 * index;
                                         const remains = maxIngredients;

@@ -43,7 +43,6 @@
 .main_text {
     height: 50px;
     overflow: hidden;
-    max-width: 650px;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
