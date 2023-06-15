@@ -1,14 +1,13 @@
 
 import React, { FC, Dispatch, useEffect } from 'react';
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
-import { useDispatch } from 'react-redux';
 import { checkResponseExport, getCookieExport } from '../services/actions';
 import { urlApi, wsApi } from '../utils/context';
 import styles from './login.module.css'
 import { EXIT_AUTH } from '../constants/authorization';
 import { FeedElements } from '../components/feed/feed';
 import { WS_CONNECTION_CLOSED, WS_CONNECTION_START_WITH_TOKEN } from '../constants/ws';
-import { useSelector } from '../types/hooks';
+import { useSelector, useDispatch } from '../types/hooks';
 
 export const HistoryOrders: FC = () => {
     const navigate = useNavigate();

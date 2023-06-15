@@ -4,15 +4,14 @@ import styles from './login.module.css'
 import { PasswordInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { urlApi } from '../utils/context'
 import { GET_TOKEN, GET_AUTH } from '../constants/authorization';
-import { useDispatch } from 'react-redux';
 import { checkResponseExport } from '../services/actions/index';
-
+import { useDispatch } from '../types/hooks';
 
 export const Login: FC = () => {
     const [emailValue, setEmailValue] = React.useState<string>('')
     const [passwordValue, setPasswordValue] = React.useState<string>('')
     const navigate = useNavigate();
-    const dispatch: Dispatch<any> = useDispatch();
+    const dispatch = useDispatch();
 
     function onClickRegistration() {
         navigate('/registration');

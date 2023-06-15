@@ -1,16 +1,15 @@
-import React, { Dispatch } from 'react';
+import React from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Profile, ResetPassword, ForgotPassword, HomePage, Login, Registration, HistoryOrders, Ingredients, Lenta } from '../../pages';
 import IngredientDetails from '../ingredient-details/ingredient-details'
 import Modal from '../modal/modal'
 import AppHeader from '../app-header/app-header'
 import { getStore, authorization, getCookieExport } from '../../services/actions/index';
-import { useDispatch } from 'react-redux';
-import { useSelector } from '../../types/hooks';
+import { useSelector, useDispatch } from '../../types/hooks';
 import FeedDetails from '../feed-details/feed-details';
 
 function App() {
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const background = location.state as { background?: Location};
