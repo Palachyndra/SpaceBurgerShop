@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { BurgerIcon, ListIcon, Logo, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import style from './app-header.module.css';
+import { useSelector } from '../../types/hooks';
 
 function AppHeader() {
    const location = useLocation();
    const navigate = useNavigate();
-   // @ts-ignore
+
    const authorization = useSelector(store => store.authReducer.authorization);
    const [auth, setAuth] = React.useState<boolean>(authorization);
 
@@ -28,8 +28,8 @@ function AppHeader() {
                <div className={'pl-2 text text_type_main-default ' + (location.pathname !== '/' && 'text_color_inactive')} onClick={() => navigate('/')}> Конструктор </div>
             </div>
             <div className={style.mini_container + " pl-5 pr-2 pb-4 pt-4"}>
-               <ListIcon type="secondary" />
-               <div className='pl-2 text text_type_main-default text_color_inactive'>  Лента заказов  </div>
+               <ListIcon type={location.pathname !== '/feed' ? "secondary" : "primary"} />
+               <div className={'pl-2 text text_type_main-default '  + (!location.pathname.includes('/feed') && ' text_color_inactive')} onClick={() => navigate('/feed')}>  Лента заказов  </div>
             </div>
          </div>
          <Logo />

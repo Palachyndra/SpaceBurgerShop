@@ -1,16 +1,15 @@
-import React, { Dispatch } from 'react';
+import React from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { Profile, ResetPassword, ForgotPassword, HomePage, Login, Registration, HistoryOrders, Ingredients } from '../../pages';
+import { Profile, ResetPassword, ForgotPassword, HomePage, Login, Registration, HistoryOrders, Ingredients, Lenta } from '../../pages';
 import IngredientDetails from '../ingredient-details/ingredient-details'
 import Modal from '../modal/modal'
 import AppHeader from '../app-header/app-header'
 import { getStore, authorization, getCookieExport } from '../../services/actions/index';
-import { useSelector, useDispatch } from 'react-redux';
-import { TLocation } from '../../types/generalTypes'
+import { useSelector, useDispatch } from '../../types/hooks';
+import FeedDetails from '../feed-details/feed-details';
 
 function App() {
-  const dispatch: Dispatch<any> = useDispatch();
-  // const location = useLocation<TLocation>(); - не работает
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const background = location.state as { background?: Location};
@@ -26,9 +25,8 @@ function App() {
   const closeModal = () => {
     navigate(-1);
   }
- 
-  // @ts-ignore
-  const dataBurgers: any = useSelector(store => store.cartReducer.items);
+
+  const dataBurgers = useSelector((store) => store.cartReducer.items);
 
   return (
     <>
@@ -44,7 +42,10 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/orders" element={<HistoryOrders />} />
             <Route path="/ingredients" element={<Ingredients />} />
+            <Route path="/feed" element={<Lenta />} />
             <Route path="/ingredients/:id" element={<IngredientDetails />} />
+            <Route path="/feed/:id" element={<FeedDetails />} />
+            <Route path="/profile/orders/:id" element={<FeedDetails />} />
           </Routes>
 
           {background && (
@@ -53,6 +54,20 @@ function App() {
                 element={
                   <Modal title="Детали ингредиента" onClose={closeModal}>
                     <IngredientDetails />
+                  </Modal>
+                }
+              />
+              <Route path={'/feed/:id'}
+                element={
+                  <Modal title=' ' onClose={closeModal}>
+                    <FeedDetails />
+                  </Modal>
+                }
+              />
+              <Route path={'/profile/orders/:id'}
+                element={
+                  <Modal title=' ' onClose={closeModal}>
+                    <FeedDetails />
                   </Modal>
                 }
               />

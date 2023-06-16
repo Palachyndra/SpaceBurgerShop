@@ -6,5 +6,7 @@ import { ResetPassword } from './reset-password';
 import { Profile } from './profile';
 import { HistoryOrders } from './orders';
 import { Ingredients } from './ingredients';
+import { Lenta } from './feed';
 
-export { Login, HomePage, Registration, ForgotPassword, ResetPassword, Profile, HistoryOrders, Ingredients };
+
+export { Login, HomePage, Registration, ForgotPassword, ResetPassword, Profile, HistoryOrders, Ingredients, Lenta };

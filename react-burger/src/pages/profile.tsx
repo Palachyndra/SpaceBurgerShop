@@ -1,10 +1,10 @@
 import React, { FC, Dispatch } from 'react';
 import styles from './login.module.css'
 import { EmailInput, Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from '../types/hooks';
 import { urlApi } from '../utils/context';
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
-import { EXIT_AUTH } from '../services/actions/authorization.js';
+import { EXIT_AUTH } from '../constants/authorization';
 import { checkResponseExport, getCookieExport } from '../services/actions/index';
 import { TStoreProfile } from '../types/generalTypes';
 
@@ -12,7 +12,6 @@ export const Profile: FC = () => {
   const dispatch: Dispatch<any> = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  // @ts-ignore
   const authorizationData = useSelector(store => store.authReducer);
   
   const [auth, setAuth] = React.useState<TStoreProfile>(authorizationData);

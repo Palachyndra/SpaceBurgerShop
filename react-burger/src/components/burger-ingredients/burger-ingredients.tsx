@@ -1,8 +1,8 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import style from './burger-ingredients.module.css';
-import { INCREASE_PRODUCT_ITEM } from '../../services/actions/burger.js';
+import { INCREASE_PRODUCT_ITEM } from '../../constants/burger';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from '../../types/hooks';
 import { useDrag } from "react-dnd";
 import { useInView } from "react-intersection-observer";
 import { Link, useLocation } from 'react-router-dom';
@@ -13,7 +13,6 @@ const BurgerDataMenu = () => {
    const [bunsRef, inViewBuns] = useInView({ threshold: 0 });
    const [sauceRef, inViewSauce] = useInView({ threshold: 0 });
    const [mainRef, inViewMain] = useInView({ threshold: 0 });
-   // @ts-ignore
    const burgerIngredients = useSelector(store => store.cartReducer.items.data);
 
    React.useEffect(() => {
@@ -96,8 +95,6 @@ const MenuCreator = ({ props }: { props: TStoreBurgerData }) => {
    const handleOpen = () => {
       dispatch({ type: INCREASE_PRODUCT_ITEM, payload: props });
    }
-
-   // @ts-ignore
    const burgerIngredients = useSelector(store => store.cartReducer.ingredientsNow);
    const [count, setIngredients] = React.useState(burgerIngredients);
 

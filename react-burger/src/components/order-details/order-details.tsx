@@ -1,10 +1,9 @@
 import styles from './order-details.module.css';
 import { } from '@ya.praktikum/react-developer-burger-ui-components';
 import donePhoto from '../../images/done.png';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../types/hooks';
 
 const OrderDetails = () => {
-    // @ts-ignore
     const responceData: { order: { number: number } } = useSelector(store => store.cartReducer.orderNumber);
     return (
         <div>

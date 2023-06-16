@@ -1,37 +1,34 @@
-import React from 'react';
+import React, { FC } from 'react';
 import style from './burger-constructor.module.css';
-import { INCREASE_SUM_ORDER, CHANGE_BUNS_ITEM, INCREASE_ORDER, SWITCH_ING_ITEM, CHANGE_INGREDIENTS_ITEM, DELETE_ITEM, DECREASE_SUM_ORDER } from '../../services/actions/burger.js';
+import { INCREASE_SUM_ORDER, CHANGE_BUNS_ITEM, INCREASE_ORDER, SWITCH_ING_ITEM, CHANGE_INGREDIENTS_ITEM, DELETE_ITEM, DECREASE_SUM_ORDER } from '../../constants/burger';
 import { getOrder } from '../../services/actions';
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal'
 import OrderDetails from '../order-details/order-details'
 import { urlApi } from '../../utils/context'
-import { useSelector, useDispatch } from 'react-redux';
 import { useDrop, useDrag } from "react-dnd";
 import { useNavigate } from 'react-router-dom';
 import { TOrder } from '../../types/generalTypes';
+import { useSelector, useDispatch } from '../../types/hooks';
 
 const urlOrders = urlApi + 'orders';
 
 const BurgerConstructor = () => {
     const dispatch = useDispatch();
-    // @ts-ignore
     const dataOrders = useSelector(store => store.cartReducer.ingredientsNow);
-    // @ts-ignore
     const sumState = useSelector(store => store.cartReducer.sumOrders);
-    // @ts-ignore
     const orderNumber = useSelector(store => store.cartReducer.orderNumber);
     const [isOpen, setIsOpen] = React.useState(false);
-    const [cards, setCards] = React.useState(dataOrders.ingredients);
+    const [cards, setCards] = React.useState<Array<any>>(dataOrders.ingredients);
+    const bun: Array<TOrder> = dataOrders.bun;
     const navigate = useNavigate();
-    // @ts-ignore
     const authorization = useSelector(store => store.authReducer.authorization);
     const [auth, setAuth] = React.useState(authorization);
 
     React.useEffect(() => {
         setCards(dataOrders.ingredients)
         setAuth(authorization);
-        
+
         if (orderNumber.success) {
             return setIsOpen(true);
         } else
@@ -45,13 +42,12 @@ const BurgerConstructor = () => {
 
     const handleOpen = () => {
         if (!auth)
-         navigate('/login')
+            navigate('/login')
         else {
-            let ingredients:Array<object> = [];
+            let ingredients: Array<object> = [];
             Object.keys(dataOrders.ingredients).forEach(key => {
                 ingredients.push(dataOrders.ingredients[key]._id);
             });
-            // @ts-ignore
             dispatch(getOrder(urlOrders, { ingredients }));
         }
     }
@@ -94,7 +90,7 @@ const BurgerConstructor = () => {
         },
     })
 
-    // @ts-ignore
+    // @ts-ignore - не знаю, как поправить. Вернуться потом
     const moveCard = React.useCallback((dragIndex, hoverIndex) =>
         dispatch({
             type: SWITCH_ING_ITEM,
@@ -102,7 +98,7 @@ const BurgerConstructor = () => {
         })
     )
 
-    const renderCard = React.useCallback((card: TOrder, index: number) => {
+    const renderCard = React.useCallback((card: TOrder, index: any) => {
         return (
             <MiddleOrder
                 key={card.uuid}
@@ -113,16 +109,14 @@ const BurgerConstructor = () => {
             />
         )
     }, [])
-
     return (
         <div className="ml-10 pb-10">
             <div className={style.constructor_bun} >
                 <>
-                    {Object.keys(dataOrders.bun).length !== 0 ? (
+                    {Object.keys(bun).length !== 0 ? (
                         <>
-                            {Object.entries(dataOrders.bun).map(([index, prop]) => {
+                            {Object.entries(bun).map(([index, prop]) => {
                                 return (
-                                    // @ts-ignore - если так нельзя, то подскажите пж, как это можно исправить
                                     <TopBun refBun={dropTopBun} props={prop} key={prop._id + index} />
                                 )
                             })}
@@ -134,10 +128,8 @@ const BurgerConstructor = () => {
                     )}
                     {Object.keys(dataOrders.ingredients).length !== 0 ? (
                         <div ref={dropIngredients} className={style.constructor_elements + ' custom-scroll'}>
-                        
                             {Object.entries(cards).map(([i, card]) =>
-                            // @ts-ignore - подскажите пж, как это можно исправить
-                            renderCard(card, i)
+                                renderCard(card, i)
                             )}
                         </div>
                     ) : (
@@ -145,13 +137,12 @@ const BurgerConstructor = () => {
                             <span className={style.marging_left}>Выберите начинку</span>
                         </div>
                     )}
-                    {Object.keys(dataOrders.bun).length !== 0 ? (
+                    {Object.keys(bun).length !== 0 ? (
                         <>
-                            {Object.entries(dataOrders.bun).map(([index, prop]) => {
+                            {Object.entries(bun).map(([index, prop]) => {
                                 return (
-                                    // @ts-ignore - если так нельзя, то подскажите пж, как это можно исправить
                                     <BottomBun refBun={dropBottomBun} props={prop} key={prop._id + index} />
-                                )    
+                                )
                             })}
                         </>
                     ) : (
@@ -178,9 +169,9 @@ const BurgerConstructor = () => {
     )
 }
 
-const MiddleOrder = ({ id, props, index, moveCard } : {id: number, props: TOrder, index: number, moveCard: any}) => {
+const MiddleOrder = ({ id, props, index, moveCard }: { id: number, props: TOrder, index: number, moveCard: any }) => {
     const dispatch = useDispatch();
-    const ref = React.useRef(null)
+    const ref: any = React.useRef(null)
 
     const [{ handlerId }, drop] = useDrop({
         accept: "ingredients2",
@@ -199,15 +190,13 @@ const MiddleOrder = ({ id, props, index, moveCard } : {id: number, props: TOrder
             if (dragIndex === hoverIndex) {
                 return
             }
-            
-            // @ts-ignore - тоже не знаю, как исправить
+
             const hoverBoundingRect = ref.current?.getBoundingClientRect()
 
             const hoverMiddleY =
                 (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
 
-            const clientOffset = monitor.getClientOffset() 
-            // @ts-ignore - тоже не знаю, как исправить
+            const clientOffset: any | null = monitor.getClientOffset()
             const hoverClientY = clientOffset.y - hoverBoundingRect.top
             if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
                 return
@@ -248,8 +237,9 @@ const MiddleOrder = ({ id, props, index, moveCard } : {id: number, props: TOrder
     )
 }
 
-const TopBun = ({ props, refBun } : {props: TOrder, refBun: any}) => {
-    if (props.types === "top")
+const TopBun = ({ props, refBun }: { props: TOrder, refBun: any }) => {
+
+    if (props.types === "top") {
         return (
             <div ref={refBun} className={style.container + ' ' + style.padding_element} >
                 <ConstructorElement
@@ -261,10 +251,13 @@ const TopBun = ({ props, refBun } : {props: TOrder, refBun: any}) => {
                 />
             </div>
         )
+    } else {
+        return null
+    }
 }
 
-const BottomBun = ({ props, refBun } : {props: TOrder, refBun: any}) => {
-    if (props.types === "bottom")
+const BottomBun = ({ props, refBun }: { props: TOrder, refBun: any }) => {
+    if (props.types === "bottom") {
         return (
             <div ref={refBun} className={style.container + ' ' + style.padding_element} >
                 <ConstructorElement
@@ -276,9 +269,12 @@ const BottomBun = ({ props, refBun } : {props: TOrder, refBun: any}) => {
                 />
             </div>
         )
+    } else {
+        return null
+    }
 }
 
-const handleOnClick = (props:TOrder, dispatch: any) => {
+const handleOnClick = (props: TOrder, dispatch: any) => {
     dispatch({ type: DELETE_ITEM, payload: props });
     dispatch({ type: DECREASE_SUM_ORDER, payload: props });
 }

@@ -1,8 +1,8 @@
 import { urlApi } from '../../utils/context'
-import { INSTALL_DATA, ADD_ORDER_NUMBER } from './burger.js'
-import { GET_AUTH } from './authorization.js';
+import { INSTALL_DATA, ADD_ORDER_NUMBER } from '../../constants/burger'
+import { GET_AUTH } from '../../constants/authorization';
 import { request } from '../../utils/request';
-import { TStoreBurgerData } from '../../types/generalTypes.js'
+import { TStoreBurgerData } from '../../types/generalTypes'
 
 export const getStore = () => async (dispatch: any) => {
     const url = urlApi + "ingredients";
@@ -40,7 +40,7 @@ export const getStore = () => async (dispatch: any) => {
         });
 }
 
-export const getOrder = (urlOrders: string = '', ingredients: string[] = []) => (dispatch: any) => {
+export const getOrder = (urlOrders: string = '', ingredients: any) => (dispatch: any) => {
     if (ingredients.length != 0)
         postData(urlOrders, { ingredients })
             .then((data) => {
@@ -52,11 +52,12 @@ export const getOrder = (urlOrders: string = '', ingredients: string[] = []) => 
 }
 
 const postData = (url: string = '', data: any = {}) => {
-    console.log(data)
+    const token: any = getCookieExport("accessToken"); 
     return fetch(url, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
+            "Authorization": token,
         },
         body: JSON.stringify(data.ingredients)
     }).then((checkResponseExport));
@@ -86,7 +87,7 @@ export function getCookieExport(name: string) {
 
 export const checkResponseExport = (res: Response) => {
     if (res.ok) {
-      return res.json();
+        return res.json();
     } else
-      return Promise.reject(`Ошибка ${res.status}`);
-  }
+        return Promise.reject(`Ошибка ${res.status}`);
+}
