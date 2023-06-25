@@ -1,4 +1,4 @@
-### Deployed to https://palachyndra.github.io/SpaceBurgerShop/react-burger/
+### Deployed to https://palachyndra.github.io/SpaceBurgerShop/
 
 # Getting Started with Create React App
 
