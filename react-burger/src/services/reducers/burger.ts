@@ -1,5 +1,4 @@
-import { DELETE_ITEM, ADD_ORDER_NUMBER, INCREASE_ITEM_BUNS, INCREASE_ITEM_INGREDIENTS, INCREASE_PRODUCT_ITEM, INSTALL_DATA, CHANGE_INGREDIENTS_ITEM, CHANGE_BUNS_ITEM, SWITCH_ING_ITEM, INCREASE_SUM_ORDER, INCREASE_ORDER, DECREASE_SUM_ORDER } from '../../constants/burger';
-import { TStoreBurgerData } from '../../types/generalTypes';
+import { DELETE_ITEM, ADD_ORDER_NUMBER, INCREASE_PRODUCT_ITEM, INSTALL_DATA, CHANGE_INGREDIENTS_ITEM, CHANGE_BUNS_ITEM, SWITCH_ING_ITEM, INCREASE_SUM_ORDER, INCREASE_ORDER, DECREASE_SUM_ORDER } from '../../constants/burger';
 import { TItems } from '../actions/burger';
 import { items, ingredientsNow, productNow, orderNumber, sumOrders } from '../initialData';
 
@@ -18,22 +17,6 @@ export const cartReducer = (state = initialState, action: TItems) => {
             return {
                 ...state,
                 items: action.payload
-            };
-        }
-        case INCREASE_ITEM_BUNS: {
-            return {
-                ...state,
-                ingredientsNow: { ...state.ingredientsNow, bun: { ...action.payload.bun } }
-            };
-        }
-        case INCREASE_ITEM_INGREDIENTS: {
-            const ingredients: any = state.ingredientsNow.ingredients
-            return {
-                ...state,
-                ingredientsNow: {
-                    bun: { ...state.ingredientsNow.bun },
-                    ingredients: Array.from(ingredients).concat(action.payload)
-                }
             };
         }
         case DELETE_ITEM: {
