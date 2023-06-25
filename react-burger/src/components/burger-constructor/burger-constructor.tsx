@@ -117,23 +117,23 @@ const BurgerConstructor = () => {
                         <>
                             {Object.entries(bun).map(([index, prop]) => {
                                 return (
-                                    <TopBun refBun={dropTopBun} props={prop} key={prop._id + index} />
+                                    <TopBun data-testid="constructor-bun-top" refBun={dropTopBun} props={prop} key={prop._id + index} />
                                 )
                             })}
                         </>
                     ) : (
-                        <div ref={dropTopBun} className={"constructor-element constructor-element_pos_top constructor-element__text"}>
+                        <div data-testid="constructor-bun-top" ref={dropTopBun} className={"constructor-element constructor-element_pos_top constructor-element__text"}>
                             <span className={style.marging_left}>Выберите булку</span>
                         </div>
                     )}
                     {Object.keys(dataOrders.ingredients).length !== 0 ? (
-                        <div ref={dropIngredients} className={style.constructor_elements + ' custom-scroll'}>
+                        <div data-testid="constructor-ingredients" ref={dropIngredients} className={style.constructor_elements + ' custom-scroll'}>
                             {Object.entries(cards).map(([i, card]) =>
                                 renderCard(card, i)
                             )}
                         </div>
                     ) : (
-                        <div ref={dropIngredients} className={"constructor-element constructor-element__text"}>
+                        <div data-testid="constructor-ingredients" ref={dropIngredients} className={"constructor-element constructor-element__text"}>
                             <span className={style.marging_left}>Выберите начинку</span>
                         </div>
                     )}

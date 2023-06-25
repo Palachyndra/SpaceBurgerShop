@@ -22,7 +22,7 @@ const Modal = (props: TModalProps) => {
                     <div className="text text_type_main-large">
                         {props.title}
                     </div>
-                    <div className={styles.header_container_close} onClick={() => props.onClose()}>
+                    <div data-testid="close-window" className={styles.header_container_close} onClick={() => props.onClose()}>
                         <CloseIcon type="primary" />
                     </div>
                 </div>
