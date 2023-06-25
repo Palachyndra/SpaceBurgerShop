@@ -142,7 +142,7 @@ const MenuCreator = ({ props }: { props: TStoreBurgerData }) => {
 
    return (
       <Link to={`/ingredients/${props._id}`} state={{ background: location }}>
-         <div ref={props.type === "bun" ? dragRef : dragRef2} className={style.burger_custom_container_ingredients + " pl-4 pr-6 pb-8"} >
+         <div data-testid={`${props.type}`} ref={props.type === "bun" ? dragRef : dragRef2} className={style.burger_custom_container_ingredients + " pl-4 pr-6 pb-8"} >
             <div className={style.up_counter}>
                {props.count ? <Counter count={props.count} size="default" /> : ''}
             </div>

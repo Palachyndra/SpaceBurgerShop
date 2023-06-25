@@ -13,7 +13,6 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const background = location.state as { background?: Location};
-
   React.useEffect(() => {
     const token: string | undefined = getCookieExport('accessToken');
 
@@ -27,6 +26,7 @@ function App() {
   }
 
   const dataBurgers = useSelector((store) => store.cartReducer.items);
+  console.log(dataBurgers)
 
   return (
     <>

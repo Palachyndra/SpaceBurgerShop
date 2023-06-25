@@ -61,18 +61,20 @@ export const Login: FC = () => {
             <div className={styles.container_box}>
                 <form>
                     <Input
-                        type={'text'}
+                        type={'email'}
                         placeholder={'E-mail'}
                         onChange={e => setEmailValue(e.target.value)}
                         value={emailValue}
                         size={'default'}
                         extraClass="pb-6"
+                        data-testid="email"
                     />
                     <PasswordInput
                         onChange={e => setPasswordValue(e.target.value)}
                         value={passwordValue}
                         name={'password'}
                         extraClass="pb-6"
+                        data-testid="password"
                     />
                 </form>
             </div>

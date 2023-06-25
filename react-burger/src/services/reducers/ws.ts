@@ -13,7 +13,7 @@ type TWSState = {
     error?: Event;
 };
 
-const initialState: TWSState = {
+export const initialState: TWSState = {
     wsConnected: false,
     messages: {
         success: false,
@@ -54,6 +54,7 @@ export const wsReducer = (state = initialState, action: TWS): TWSState => {
                 wsConnected: false,
             };
         case WS_GET_MESSAGE: {
+            console.log(action.payload)
             return {
                 ...state,
                 error: undefined,
