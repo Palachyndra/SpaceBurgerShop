@@ -1,16 +1,14 @@
 
+import { email, password }  from '../../src/utils/context'
 describe("test auth", () => {
-  const email = "pozhidaevmasgmk@yandex.ru";
-  const password = "admin123";
-  const localUrl = "http://localhost:3000";
-
+ 
   before(() => {
-    cy.visit(`${localUrl}/login`);
+    cy.visit('/login');
     cy.get('input[type=email]').click().type(`${email}`);
     cy.get('input[type=password]').click().type(`${password}`);
     cy.contains('Войти').click();
   });
-  
+
 
   it('should d&d and order', () => {
     cy.get('[data-testid=bun]').contains('Краторная булка N-200i').trigger('dragstart');
